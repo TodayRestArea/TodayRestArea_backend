@@ -1,4 +1,4 @@
-package com.todayrestarea.user.domain;
+package com.todayrestarea.user.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
+@Table(name = "user")
 public class User {
 
     @Id
