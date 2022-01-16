@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService{
         if(user == null){
             user = signUpUser(userInfo);
         }
-        System.out.println("user = " + user.toString());
         String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserSeq()));
         String refreshToken = jwtAuthTokenProvider.createRefreshToken();
         user.updateRefreshToken(refreshToken);
