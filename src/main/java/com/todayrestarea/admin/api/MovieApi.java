@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -47,7 +49,9 @@ public class MovieApi {
            movieEntity.setInfoUrl("temp info url");
            movieEntity.setPosterUrl("temp poster url");
             Long idx=movieService.saveMovie(movieEntity);
-            res.setResult(idx);
+            Map<String,Long> result=new HashMap<>();
+            result.put("movieIdx",idx);
+            res.setResult(result);
         } catch (Exception e) {
             res.setCode(404);
             res.setSuccess(false);

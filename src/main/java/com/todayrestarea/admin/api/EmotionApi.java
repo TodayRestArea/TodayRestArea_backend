@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -52,7 +54,9 @@ public class EmotionApi {
                 EmotionEntity emotionEntity=new EmotionEntity();
                 emotionEntity.setEmotionName(emotionRequest.getEmotionName());
                 Long resultIdx = emotionService.saveEmotion(emotionEntity);
-                res.setResult(resultIdx);
+                Map<String,Long> result=new HashMap<>();
+                result.put("emotionIdx",resultIdx);
+                res.setResult(result);
             }
 
         } catch (Exception e) {

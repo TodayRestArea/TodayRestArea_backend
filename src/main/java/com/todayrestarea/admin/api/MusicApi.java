@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -54,7 +56,9 @@ public class MusicApi {
                throw new Exception("이미 존재하는 제목-아티스트 입니다") ;
             }else{
                 Long resultIdx = musicService.saveMusic(musicRequest);
-                res.setResult(resultIdx);
+                Map<String,Long> result=new HashMap<>();
+                result.put("musicIdx",resultIdx);
+                res.setResult(result);
             }
 
         } catch (Exception e) {
