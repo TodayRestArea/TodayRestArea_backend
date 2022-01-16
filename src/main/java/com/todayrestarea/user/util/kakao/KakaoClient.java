@@ -4,6 +4,7 @@ import com.todayrestarea.user.util.kakao.dto.KakaoUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -13,7 +14,7 @@ import reactor.core.publisher.Mono;
 public class KakaoClient {
     private final WebClient webClient;
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public KakaoUserResponse getUserInfo(String accessToken) {
         return webClient.get()
                 .uri("https://kapi.kakao.com/v2/user/me")

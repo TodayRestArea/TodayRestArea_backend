@@ -2,10 +2,13 @@ package com.todayrestarea.user.util.kakao.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.todayrestarea.user.util.kakao.KakaoClient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@ToString
 @Getter
 @NoArgsConstructor
 public class KakaoUserResponse {

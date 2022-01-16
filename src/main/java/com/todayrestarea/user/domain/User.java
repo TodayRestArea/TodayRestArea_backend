@@ -31,6 +31,7 @@ public class User {
     @Column
     private Timestamp createdAt;
 
+    @Transient
     private String refreshToken;
 
     @Builder
