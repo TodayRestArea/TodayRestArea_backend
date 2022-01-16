@@ -1,6 +1,6 @@
 package com.todayrestarea.user.repository;
 
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Long> {
