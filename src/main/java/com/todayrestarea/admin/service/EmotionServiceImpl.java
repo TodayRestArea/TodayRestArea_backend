@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Getter
@@ -26,8 +27,12 @@ public class EmotionServiceImpl implements EmotionService {
         return emotionRepo.save(emotionEntity).getEmotionIdx();
     }
     @Override
-    public Long findEmotionByName(String name){
-        return emotionRepo.findEmotionByName(name).getEmotionIdx();
+    public Optional<EmotionEntity> findEmotionByName(String name){
+        return emotionRepo.findEmotionByName(name);
+    }
+    @Override
+    public void deleteEmotion(Long idx){
+        emotionRepo.delete(emotionRepo.findById(idx).get());
     }
 
 }

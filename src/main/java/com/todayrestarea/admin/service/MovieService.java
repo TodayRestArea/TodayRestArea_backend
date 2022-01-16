@@ -11,4 +11,5 @@ public interface MovieService {
     //MOVIE service
     List<MovieEntity> findMovies();
     Long saveMovie(MovieEntity movieEntity);
+    void deleteMovie(Long idx);
 }

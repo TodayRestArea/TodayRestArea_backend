@@ -23,4 +23,8 @@ public class MovieServiceImpl implements MovieService {
     public Long saveMovie(MovieEntity movieEntity){
         return movieRepo.save(movieEntity).getMovieIdx();
     }
+    @Override
+    public void deleteMovie(Long idx){
+        movieRepo.delete(movieRepo.findById(idx).get());
+    }
 }

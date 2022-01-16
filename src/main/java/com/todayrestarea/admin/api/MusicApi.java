@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,7 +37,6 @@ public class MusicApi {
     }
 
     /**
-     * TODO 노래-가수 중복 체크, 감정 설정 , 이미지가 없을때
      * @param musicRequest
      * @return
      */
@@ -45,8 +45,18 @@ public class MusicApi {
     public AdminResponse musicAdd(@RequestBody MusicRequest musicRequest) {
         AdminResponse res = new AdminResponse();
         try {
-            Long resultIdx = musicService.saveMusic(musicRequest);
-            res.setResult(resultIdx);
+            Optional<MusicEntity> existEntity=musicService.isExist(
+                    musicRequest.getMusicTitle(),
+                    musicRequest.getMusicArtist()
+            );
+            if(existEntity.isPresent()){
+                res.setResult(existEntity.get());
+               throw new Exception("이미 존재하는 제목-아티스트 입니다") ;
+            }else{
+                Long resultIdx = musicService.saveMusic(musicRequest);
+                res.setResult(resultIdx);
+            }
+
         } catch (Exception e) {
             res.setCode(404);
             res.setSuccess(false);

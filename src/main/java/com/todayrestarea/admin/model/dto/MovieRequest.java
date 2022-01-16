@@ -2,12 +2,13 @@ package com.todayrestarea.admin.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MovieRequest {
-    private String movieTitle;
-    private String emotionName;
+    final private String movieTitle;
+    final private String emotionName;
 }

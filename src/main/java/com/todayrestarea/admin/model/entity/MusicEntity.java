@@ -9,6 +9,9 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @Entity
+@NamedQuery(name = "MusicEntity.checkExistence",
+query = "select m from MusicEntity m where m.title=:title and m.artist=:artist"
+)
 @Table(name="MUSIC")
 public class MusicEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

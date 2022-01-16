@@ -1,13 +1,15 @@
 package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
+import com.todayrestarea.admin.model.dto.EmotionRequest;
+import com.todayrestarea.admin.model.entity.EmotionEntity;
 import com.todayrestarea.admin.service.EmotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,13 +19,63 @@ public class EmotionApi {
     @GetMapping("")
     @ResponseBody
     public AdminResponse emotionList(){
-        System.out.println("aa");
-        return new AdminResponse();
+        AdminResponse res = new AdminResponse();
+        try{
+            List<EmotionEntity> emotions = emotionService.findEmotions();
+            if(emotions.size()==0){
+                res.setMessage("success but data empty");
+            }
+            res.setResult(emotions);
+        }catch(Exception e){
+            res.setCode(404);
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }finally {
+            return res;
+        }
     }
 
     @PostMapping("")
     @ResponseBody
-    public AdminResponse emotionAdd() {
-        return new AdminResponse();
+    public AdminResponse emotionAdd(@RequestBody EmotionRequest emotionRequest) {
+        System.out.println("emotionRequest.toString() = " + emotionRequest.toString());
+        AdminResponse res = new AdminResponse();
+        try {
+            Optional<EmotionEntity> existEntity=emotionService.findEmotionByName(
+                    emotionRequest.getEmotionName()
+            );
+
+            if(existEntity.isPresent()){
+                res.setResult(existEntity.get());
+                throw new Exception("이미 존재하는 감정 입니다") ;
+            }else{
+                EmotionEntity emotionEntity=new EmotionEntity();
+                emotionEntity.setEmotionName(emotionRequest.getEmotionName());
+                Long resultIdx = emotionService.saveEmotion(emotionEntity);
+                res.setResult(resultIdx);
+            }
+
+        } catch (Exception e) {
+            res.setCode(404);
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        } finally {
+            return res;
+        }
+    }
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public AdminResponse emotionDelete(@PathVariable(value = "id")Long emotionIdx) {
+        AdminResponse res = new AdminResponse();
+        try {
+            emotionService.deleteEmotion(emotionIdx);
+            //res.setResult();
+        } catch (Exception e) {
+            res.setCode(404);
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        } finally {
+            return res;
+        }
     }
 }

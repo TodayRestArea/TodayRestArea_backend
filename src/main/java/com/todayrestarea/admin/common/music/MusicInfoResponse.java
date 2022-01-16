@@ -16,7 +16,6 @@ public class MusicInfoResponse{
     final private String url;
     final private List<PosterImage> posterImage;
     public String getPosterUrl(){
-        System.out.println("posterImage = " + posterImage.get(1));
         if (posterImage.size() == 0) {
             return "https://~";
         }else if(posterImage.size()<2){
