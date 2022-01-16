@@ -3,9 +3,10 @@ package com.todayrestarea.user.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -29,8 +30,9 @@ public class User {
     @Column
     private String gender;
 
-    @Column
-    private Timestamp createdAt;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdAt;
 
     @Transient
     private String refreshToken;
