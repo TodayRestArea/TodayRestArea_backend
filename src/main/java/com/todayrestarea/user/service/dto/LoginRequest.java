@@ -1,10 +1,12 @@
 package com.todayrestarea.user.service.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+@ToString
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
-    private final String accessToken;
+
+    private String accessToken;
 }
