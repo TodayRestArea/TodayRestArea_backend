@@ -1,9 +1,8 @@
 package com.todayrestarea.diary.api;
 
 import com.todayrestarea.common.dto.BaseException;
-import com.todayrestarea.diary.model.DiaryListRes;
+import com.todayrestarea.diary.model.*;
 import com.todayrestarea.diary.entity.Diary;
-import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.diary.service.DiaryService;
 import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.todayrestarea.common.dto.ComResponseDto;
-import com.todayrestarea.diary.model.DiaryRes;
-import com.todayrestarea.diary.model.PostDiaryRequest;
 
 
 import java.util.List;
@@ -71,7 +68,7 @@ public class DiaryApi {
 
     /**
      * 일기 수정 API
-     * [PUT] /diarys
+     * [PUT] /diarys/{diaryId}
      */
     @PutMapping("/{diaryId}")
     public ComResponseDto<DiaryRes> updateDiary(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId,
@@ -96,21 +93,23 @@ public class DiaryApi {
 
     /**
      * 일기상세 조회 API
-     * [GET] /diarys
+     * [GET] /diarys/{diaryId}/details
      */
-//    @GetMapping("/{diaryIdx}/details")
-//    public ComResponseDto<DiaryRes> getDiaryDetail(@PathVariable("diaryIdx") int diaryIdx){
-//        // TODO : accessToken 복호화 => userIdx정보 얻기
-//
-//        try {
-//
-//
-//        } catch (BaseException exception)
-//        {
-//            return ComResponseDto.error(exception.getErrorCode());
-//        }
-//
-//    }
+    @GetMapping("/{diaryId}/details")
+    public ComResponseDto<GetDiaryDetail> getDiaryDetail(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") int diaryId){
+        try {
+            // jwt 복호화 => user정보 얻기
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+
+            // 일기 수정
+            Diary diary = diaryService.getDiaryDetail(diaryId, userId);
+            GetDiaryDetail diaryDetailRes = new GetDiaryDetail(diary.getDiaryId());
+            return ComResponseDto.success(diaryDetailRes);
+        } catch (BaseException exception)
+        {
+            return ComResponseDto.error(exception.getErrorCode());
+        }
+    }
 
     /**
      * 일기 월별 조회 API
