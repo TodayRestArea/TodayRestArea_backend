@@ -7,7 +7,7 @@ import com.todayrestarea.admin.model.entity.Music;
 import com.todayrestarea.admin.repository.JpaEmotionRepository;
 import com.todayrestarea.admin.service.MovieService;
 import com.todayrestarea.admin.service.MusicService;
-import com.todayrestarea.diary.entity.DiaryEntity;
+import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.model.DiaryAnalysis;
 import com.todayrestarea.diary.model.RecommendMovie;
 import com.todayrestarea.diary.model.RecommendMusic;
@@ -33,7 +33,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
     final private MovieService movieService;
     @Override
     public DiaryAnalysis analyzeDiary(Long diaryId){
-        Optional<DiaryEntity> diary = diaryRepository.findById(diaryId);
+        Optional<Diary> diary = diaryRepository.findById(diaryId);
         /**
          * 다음 외부 API 로 감정 컨텐츠 추가 및 일기 감정 수정
          * {
@@ -122,7 +122,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
             if (diary.get().getEmotion()==null&&emotion.isPresent()) {
                 diary.get().setEmotion(emotion.get());
             }
-            result.setCreatedData(diary.get().getCreatedAt());
+            result.setCreatedData(diary.get().getCreatedDate());
             result.setEmotionId(emotion.get().getEmotionId());
             result.setEmotionName(emotion.get().getEmotionName());
 

@@ -121,18 +121,8 @@ public class DiaryApi {
         try {
             // jwt 복호화 => user정보 얻기
             Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-            Optional<User> user = userService.findById(userId);
 
-            // 유저가 존재하지 않음
-            if (user.isEmpty())
-                throw new BaseException(NOT_FOUND_USER_EXCEPTION);
-
-            // date 형식 validation
-            if(!isRegexYearMonth(yearMonth))
-                throw new BaseException(BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION);
-
-            // 일기 생성
-
+            // 일기 리스트 생성
             List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
             return ComResponseDto.success(diaryList);
 
