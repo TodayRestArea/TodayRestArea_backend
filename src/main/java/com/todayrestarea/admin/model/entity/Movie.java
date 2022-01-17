@@ -11,12 +11,12 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name="MOVIE")
-public class MovieEntity {
+@Table(name="movie")
+public class Movie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long movieIdx;
-    @Column(name="emotion_seq")
-    private Integer emotionIdx;
+    private Long movieId;
+    @Column(name="emotion_id")
+    private Integer emotionId;
     @Column(name="title")
     private String movieTitle;
     @Column(name="poster_url")

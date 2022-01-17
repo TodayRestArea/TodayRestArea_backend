@@ -21,13 +21,10 @@ public enum ErrorCode {
 
     // Forbidden
     FORBIDDEN_EXCEPTION(403,  "허용되지 않은 접근입니다"),
-    FORBIDDEN_EXERCISE_CATEGORY_DEPTH_EXCEPTION(403, "운동 카테고리의 뎁스는 2뎁스까지만 허용됩니다"),
 
     // NotFound
     NOT_FOUND_EXCEPTION(404, "존재하지 않습니다"),
     NOT_FOUND_USER_EXCEPTION(404,  "존재하지 않는 유저입니다"),
-    NOT_FOUND_EXERCISE_CATEGORY_EXCEPTION(404, "존재하지 않는 운동 카테고리입니다"),
-    NOT_FOUND_POSTER_EXCEPTION(404,  "존재하지 않는 포스터입니다"),
 
     // Method Not Allowed
     METHOD_NOT_ALLOWED_EXCEPTION(405,  "Method Not allowed"),

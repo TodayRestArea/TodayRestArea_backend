@@ -3,7 +3,7 @@ package com.todayrestarea.admin.service;
 import com.todayrestarea.admin.common.music.MusicInfoApi;
 import com.todayrestarea.admin.common.music.MusicInfoResponse;
 import com.todayrestarea.admin.model.dto.MusicRequest;
-import com.todayrestarea.admin.model.entity.MusicEntity;
+import com.todayrestarea.admin.model.entity.Music;
 import com.todayrestarea.admin.repository.JpaEmotionRepository;
 import com.todayrestarea.admin.repository.JpaMovieRepository;
 import com.todayrestarea.admin.repository.JpaMusicRepository;
@@ -26,7 +26,7 @@ public class MusicServiceImpl implements MusicService {
 
     //MUSIC serviceImple
     @Override
-    public List<MusicEntity> findMusics(){
+    public List<Music> findMusics(){
         return musicRepo.findAll();
     }
 
@@ -47,27 +47,27 @@ public class MusicServiceImpl implements MusicService {
         if(miResponse.isEmpty()){
             return -1l;
         }else{
-            MusicEntity musicEntity=new MusicEntity();
+            Music music =new Music();
 
             //받은 정보 이용한 entity 초기화
-            musicEntity.setTitle(miResponse.get().getName());
-            musicEntity.setArtist(miResponse.get().getArtist());
-            musicEntity.setInfoUrl(miResponse.get().getUrl());
-            musicEntity.setPosterUrl(miResponse.get().getPosterUrl());
-            musicEntity.setEmotionIdx(0);
-            System.out.println("musicEntity.toString() = " + musicEntity.toString());
-            return musicRepo.save(musicEntity).getMusicIdx();
+            music.setTitle(miResponse.get().getName());
+            music.setArtist(miResponse.get().getArtist());
+            music.setInfoUrl(miResponse.get().getUrl());
+            music.setPosterUrl(miResponse.get().getPosterUrl());
+            music.setEmotionId(0);
+            System.out.println("musicEntity.toString() = " + music.toString());
+            return musicRepo.save(music).getMusicId();
         }
     }
 
     @Override
     public void deleteMusic(Long musicIdx) {
-        Optional<MusicEntity> byId = musicRepo.findById(musicIdx);
+        Optional<Music> byId = musicRepo.findById(musicIdx);
          musicRepo.delete(byId.get());
     }
 
     @Override
-    public Optional<MusicEntity> isExist(String title, String artist) {
+    public Optional<Music> isExist(String title, String artist) {
         return musicRepo.checkExistence(title,artist);
     }
 

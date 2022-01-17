@@ -1,7 +1,7 @@
 package com.todayrestarea.user.service;
 
 import com.todayrestarea.common.dto.BaseException;
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
 import com.todayrestarea.user.service.dto.LoginRequest;
 import com.todayrestarea.user.service.dto.LoginResponse;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService{
         if(user == null){
             user = signUpUser(userInfo);
         }
-        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserSeq()));
+        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserId()));
         String refreshToken = jwtAuthTokenProvider.createRefreshToken();
         user.updateRefreshToken(refreshToken);
         return LoginResponse.of(accessToken, refreshToken);
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public Optional<User> findUserByToken(String jwtToken) throws BaseException {
-        Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserSeq();
+        Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
         return userRepository.findById(userId);
     }
 

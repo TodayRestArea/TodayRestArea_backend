@@ -1,4 +1,4 @@
-package com.todayrestarea.user.domain;
+package com.todayrestarea.user.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,23 +11,19 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Long userId;
 
-    @Column
     private String oauthId;
 
-    @Column
     private String userName;
 
-    @Column
     private String ageRange;
 
-    @Column
     private String gender;
 
     @Temporal(value = TemporalType.TIMESTAMP)

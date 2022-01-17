@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AuthTokenPayload {
-    private Long userSeq;
+    private Long userId;
 
-    public static AuthTokenPayload of(Long userSeq) {
-        return new AuthTokenPayload(userSeq);
+    public static AuthTokenPayload of(Long userId) {
+        return new AuthTokenPayload(userId);
     }
 }

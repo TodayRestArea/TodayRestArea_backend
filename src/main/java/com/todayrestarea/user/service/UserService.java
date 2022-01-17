@@ -1,7 +1,7 @@
 package com.todayrestarea.user.service;
 
 import com.todayrestarea.common.dto.BaseException;
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.service.dto.LoginRequest;
 import com.todayrestarea.user.service.dto.LoginResponse;
 

@@ -2,14 +2,15 @@ package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
 import com.todayrestarea.admin.model.dto.MovieRequest;
-import com.todayrestarea.admin.model.entity.MovieEntity;
+import com.todayrestarea.admin.model.entity.Movie;
 import com.todayrestarea.admin.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,7 +22,7 @@ public class MovieApi {
     public AdminResponse movieList(){
         AdminResponse res = new AdminResponse();
         try{
-            List<MovieEntity> movies = movieService.findMovies();
+            List<Movie> movies = movieService.findMovies();
             if(movies.size()==0){
                 res.setMessage("success but data empty");
             }
@@ -34,20 +35,21 @@ public class MovieApi {
             return res;
         }
     }
-
     @PostMapping("")
     @ResponseBody
     public AdminResponse movieAdd(@RequestBody MovieRequest movieRequest) {
         AdminResponse res = new AdminResponse();
         try {
            res.setMessage("yet developed");
-           MovieEntity movieEntity=new MovieEntity();
-           movieEntity.setEmotionIdx(0);
-           movieEntity.setMovieTitle("temp movie title");
-           movieEntity.setInfoUrl("temp info url");
-           movieEntity.setPosterUrl("temp poster url");
-            Long idx=movieService.saveMovie(movieEntity);
-            res.setResult(idx);
+           Movie movie =new Movie();
+           movie.setEmotionId(0);
+           movie.setMovieTitle("temp movie title");
+           movie.setInfoUrl("temp info url");
+           movie.setPosterUrl("temp poster url");
+            Long idx=movieService.saveMovie(movie);
+            Map<String,Long> result=new HashMap<>();
+            result.put("movieId",idx);
+            res.setResult(result);
         } catch (Exception e) {
             res.setCode(404);
             res.setSuccess(false);

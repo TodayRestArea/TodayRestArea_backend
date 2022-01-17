@@ -3,7 +3,7 @@ package com.todayrestarea.diary.api;
 import com.todayrestarea.common.dto.BaseException;
 import com.todayrestarea.diary.service.DiaryService;
 import com.todayrestarea.diary.service.DiaryServiceImpl;
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.service.UserService;
 import com.todayrestarea.user.service.UserServiceImpl;
 import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import com.todayrestarea.common.dto.ComResponseDto;
 import com.todayrestarea.diary.model.DiaryRes;
 import com.todayrestarea.diary.model.PostDiaryRequest;
-
 import java.util.Optional;
 
 import static com.todayrestarea.common.ErrorCode.*;
@@ -37,7 +36,7 @@ public class DiaryApi {
     public ComResponseDto<DiaryRes> createDiary(@RequestHeader("Authorization") String jwtToken, @RequestBody PostDiaryRequest postDiaryRequest){
         try {
             // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserSeq();
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
             Optional<User> user = userService.findById(userId);
 
             // 유저가 존재하지 않음
@@ -50,29 +49,30 @@ public class DiaryApi {
 
             // 일기 생성
 
+            DiaryRes  diaryRes = null;
+            return ComResponseDto.success(diaryRes);
 
         } catch (BaseException exception)
         {
             return ComResponseDto.error(exception.getErrorCode());
         }
-
     }
 
-    /**
-     * 일기상세 조회 API
-     * [GET] /diarys
-     */
-    @GetMapping("/{diaryIdx}/details")
-    public ComResponseDto<DiaryRes> getDiaryDetail(@PathVariable("diaryIdx") int diaryIdx){
-        // TODO : accessToken 복호화 => userIdx정보 얻기
-
-        try {
-
-
-        } catch (BaseException exception)
-        {
-            return ComResponseDto.error(exception.getErrorCode());
-        }
-
-    }
+//    /**
+//     * 일기상세 조회 API
+//     * [GET] /diarys
+//     */
+//    @GetMapping("/{diaryIdx}/details")
+//    public ComResponseDto<DiaryRes> getDiaryDetail(@PathVariable("diaryIdx") int diaryIdx){
+//        // TODO : accessToken 복호화 => userIdx정보 얻기
+//
+////        try {
+////
+////
+////        } catch (BaseException exception)
+////        {
+////            return ComResponseDto.error(exception.getErrorCode());
+////        }
+//
+//    }
 }
