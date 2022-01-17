@@ -9,6 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface DiaryRepository extends JpaRepository<Diary,Long> {
-    @Query(value = "select * from diary where date_format(created_date, '%Y-%m') = :yearMonth", nativeQuery = true)
-    List<Diary> findDiariesByCreatedDate(@Param(value = "yearMonth") String yearMonth);
+    @Query(value = "select * from diary where date_format(created_date, '%Y-%m') = :yearMonth and user_id = :userId", nativeQuery = true)
+    List<Diary> findDiariesByCreatedDate(@Param("userId") Long userId, @Param("yearMonth") String yearMonth);
 }

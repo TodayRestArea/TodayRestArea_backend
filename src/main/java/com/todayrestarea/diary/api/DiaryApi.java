@@ -101,7 +101,7 @@ public class DiaryApi {
 
             // 일기 생성
 
-            List<DiaryListRes> diaryList = diaryService.getDiaryList(yearMonth);
+            List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
             return ComResponseDto.success(diaryList);
 
         } catch (BaseException exception)

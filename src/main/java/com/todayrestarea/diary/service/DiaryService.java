@@ -5,5 +5,5 @@ import com.todayrestarea.diary.model.DiaryListRes;
 import java.util.List;
 
 public interface DiaryService {
-    List<DiaryListRes> getDiaryList(String yearMonth);
+    List<DiaryListRes> getDiaryList(Long userId, String yearMonth);
 }

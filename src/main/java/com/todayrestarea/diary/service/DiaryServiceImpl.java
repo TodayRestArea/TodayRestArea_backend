@@ -21,9 +21,9 @@ public class DiaryServiceImpl implements DiaryService{
 
 
     @Override
-    public List<DiaryListRes> getDiaryList(String yearMonth) {
+    public List<DiaryListRes> getDiaryList(Long userId, String yearMonth) {
 
-        List<Diary> diaryList = diaryRepository.findDiariesByCreatedDate(yearMonth);
+        List<Diary> diaryList = diaryRepository.findDiariesByCreatedDate(userId, yearMonth);
         List<DiaryListRes> diaryResList = new ArrayList<DiaryListRes>();
 
         for (Diary diary : diaryList) {
