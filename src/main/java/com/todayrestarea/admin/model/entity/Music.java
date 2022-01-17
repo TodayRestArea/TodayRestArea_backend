@@ -21,8 +21,6 @@ query = "select m from Music m where m.title=:title and m.artist=:artist"
 public class Music {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long musicId;
-    @Column(name="emotion_id")
-    private Integer emotionId;
     @Column(name="title")
     private String title;
     @Column(name="artist")
@@ -31,4 +29,16 @@ public class Music {
     private String posterUrl;
     @Column(name="info_url")
     private String infoUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "emotion_emotion_id")
+    private Emotion emotion;
+
+    public void setEmotion(Emotion emotion){
+        if (this.emotion != null) {
+            this.emotion.getMusics().remove(this);
+        }
+        this.emotion=emotion;
+        this.emotion.getMusics().add(this);
+    }
 }

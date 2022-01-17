@@ -31,6 +31,11 @@ public class EmotionServiceImpl implements EmotionService {
         return emotionRepo.findEmotionByName(name);
     }
     @Override
+    public Optional<Emotion> findEmotionById(Long id){
+        return emotionRepo.findById(id);
+    }
+
+    @Override
     public void deleteEmotion(Long idx){
         emotionRepo.delete(emotionRepo.findById(idx).get());
     }
