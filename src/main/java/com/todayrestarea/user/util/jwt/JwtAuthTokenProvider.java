@@ -27,7 +27,7 @@ public class JwtAuthTokenProvider {
 
             return JWT.create()
                     .withIssuer("test")
-                    .withClaim("user_seq", payload.getUserSeq())
+                    .withClaim("user_id", payload.getUserId())
                     .withIssuedAt(now)
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(JWT_SECRET));
@@ -40,10 +40,9 @@ public class JwtAuthTokenProvider {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET))
                 .withIssuer("test")
                 .build();
-
         try {
             DecodedJWT jwt = verifier.verify(accessToken);
-            return AuthTokenPayload.of(jwt.getClaim("user_seq").asLong());
+            return AuthTokenPayload.of(jwt.getClaim("user_id").asLong());
         }  catch (TokenExpiredException exception) {
             throw new TokenExpiredException("Access token($accessToken)이 만료되었습니다.");
         } catch (JWTVerificationException exception) {

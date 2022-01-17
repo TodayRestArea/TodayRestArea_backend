@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService{
         if(user == null){
             user = signUpUser(userInfo);
         }
-        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserSeq()));
+        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserId()));
         String refreshToken = jwtAuthTokenProvider.createRefreshToken();
         user.updateRefreshToken(refreshToken);
         return LoginResponse.of(accessToken, refreshToken);

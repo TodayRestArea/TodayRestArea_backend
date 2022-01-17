@@ -16,18 +16,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Long userId;
 
-    @Column
     private String oauthId;
 
-    @Column
     private String userName;
 
-    @Column
     private String ageRange;
 
-    @Column
     private String gender;
 
     @Temporal(value = TemporalType.TIMESTAMP)
