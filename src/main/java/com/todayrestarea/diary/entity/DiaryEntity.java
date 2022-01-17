@@ -21,29 +21,29 @@ import java.util.Date;
 public class DiaryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long diaryIdx;
+    private Long diaryId;
 
     @Lob
     @Column(name="contents")
     private String contents;
 
     @ManyToOne
-    @JoinColumn(name="user_seq")
+    @JoinColumn(name="user_id")
     private User writer;
 
     @ManyToOne
-    @JoinColumn(name="weather_seq")
+    @JoinColumn(name="weather_id")
     private WeatherEntity weather;
 
     @ManyToOne
-    @JoinColumn(name="emotion_seq")
+    @JoinColumn(name="emotion_id")
     private EmotionEntity emotion;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
+    @Temporal(value = TemporalType.DATE)
     @UpdateTimestamp
     private Date updatedAt;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
+    @Temporal(value = TemporalType.DATE)
     @CreationTimestamp
     private Date createdAt;
 }

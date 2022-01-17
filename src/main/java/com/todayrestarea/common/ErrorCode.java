@@ -13,6 +13,7 @@ public enum ErrorCode {
     BAD_REQUEST_WRONG_FILE_EXTENSION_EXCEPTION(400,  "확장자가 없는 잘못된 파일의 형식입니다"),
     BAD_REQUEST_WRONG_EMAIL_FORMAT_EXCEPTION(400, "잘못된 이메일 포맷입니다"),
     BAD_REQUEST_WRONG_USER_DELETE_EXCEPTION(400, "잘못된 유저 삭제 요청입니다"),
+    BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION(400, "잘못된 날짜 포맷입니다"),
 
     // UnAuthorized
     UNAUTHORIZED_EXCEPTION(401,  "잘못된 토큰입니다. 다시 로그인해주세요"),
