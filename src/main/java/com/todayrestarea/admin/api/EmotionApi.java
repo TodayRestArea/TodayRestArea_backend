@@ -2,6 +2,7 @@ package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
 import com.todayrestarea.admin.model.dto.EmotionRequest;
+import com.todayrestarea.admin.model.dto.EmotionResponse;
 import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.service.EmotionService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class EmotionApi {
             if(emotions.size()==0){
                 res.setMessage("success but data empty");
             }
-            res.setResult(emotions);
+            EmotionResponse emotionResponse = new EmotionResponse(emotions);
+            res.setResult(emotionResponse.getEmotionListDto());
         }catch(Exception e){
             res.setCode(404);
             res.setSuccess(false);

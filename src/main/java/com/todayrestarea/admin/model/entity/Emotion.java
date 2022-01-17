@@ -4,6 +4,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +19,13 @@ public class Emotion {
     private Long emotionId;
     @Column(name="emotion_name")
     private String emotionName;
+
+    @OneToMany(mappedBy = "emotion")
+    private List<Music> musics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "emotion")
+    private List<Movie> movies = new ArrayList<>();
+
 
 
 }

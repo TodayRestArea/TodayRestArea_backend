@@ -8,5 +8,5 @@ import lombok.*;
 public class MusicRequest {
     final private String musicTitle;
     final private String musicArtist;
-    final private Long emotionIdx;
+    final private Long emotionId;
 }

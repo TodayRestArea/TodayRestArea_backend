@@ -1,8 +1,11 @@
 package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
+import com.todayrestarea.admin.model.dto.MusicListResponse;
 import com.todayrestarea.admin.model.dto.MusicRequest;
+import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Music;
+import com.todayrestarea.admin.service.EmotionService;
 import com.todayrestarea.admin.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,16 +21,20 @@ import java.util.Optional;
 @RequestMapping("/admin/musics")
 public class MusicApi {
     final private MusicService musicService;
+    final private EmotionService emotionService;
     @GetMapping("")
     @ResponseBody
     public AdminResponse musicList(){
         AdminResponse res = new AdminResponse();
         try{
             List<Music> musics = musicService.findMusics();
+            System.out.println("musics = " + musics);
+            MusicListResponse musicRes = new MusicListResponse(musics);
             if(musics.size()==0){
                 res.setMessage("success but data empty");
             }
-            res.setResult(musics);
+            System.out.println("musicRes = " + musicRes);
+            res.setResult(musicRes.getDtoList());
         }catch(Exception e){
             res.setCode(404);
             res.setSuccess(false);
@@ -54,6 +61,10 @@ public class MusicApi {
                 res.setResult(existEntity.get());
                throw new Exception("이미 존재하는 제목-아티스트 입니다") ;
             }else{
+                Optional<Emotion> emotion=emotionService.findEmotionById(musicRequest.getEmotionId());
+                if(emotion.isPresent()){
+                    throw new Exception("존재하지 않는 감정 아이디 입니다") ;
+                }
                 Long resultIdx = musicService.saveMusic(musicRequest);
                 Map<String,Long> result=new HashMap<>();
                 result.put("musicId",resultIdx);
