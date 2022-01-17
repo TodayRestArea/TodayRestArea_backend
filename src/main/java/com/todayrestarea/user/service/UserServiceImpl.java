@@ -1,5 +1,6 @@
 package com.todayrestarea.user.service;
 
+import com.todayrestarea.common.dto.BaseException;
 import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
 import com.todayrestarea.user.service.dto.LoginRequest;
@@ -36,5 +37,14 @@ public class UserServiceImpl implements UserService{
     private User signUpUser(KakaoUserResponse userInfo) {
         User newUser = User.newKaKaoInstance(userInfo.getId(), userInfo.getNickName(), userInfo.getAge_range(), userInfo.getGender());
         return userRepository.save(newUser);
+    }
+
+    public Optional<User> findUserByToken(String jwtToken) throws BaseException {
+        Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+        return userRepository.findById(userId);
+    }
+
+    public Optional<User> findById(Long userId){
+        return userRepository.findById(userId);
     }
 }
