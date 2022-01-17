@@ -1,36 +1,34 @@
-package com.todayrestarea.user.domain;
+package com.todayrestarea.user.entity;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Long userId;
 
-    @Column
     private String oauthId;
 
-    @Column
     private String userName;
 
-    @Column
     private String ageRange;
 
-    @Column
     private String gender;
 
-    @Column
-    private Timestamp createdAt;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdAt;
 
     @Transient
     private String refreshToken;
