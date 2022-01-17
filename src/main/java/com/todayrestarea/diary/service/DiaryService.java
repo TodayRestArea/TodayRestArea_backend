@@ -1,5 +1,9 @@
 package com.todayrestarea.diary.service;
 
-public interface DiaryService {
+import com.todayrestarea.diary.model.DiaryListRes;
 
+import java.util.List;
+
+public interface DiaryService {
+    List<DiaryListRes> getDiaryList(String yearMonth);
 }
