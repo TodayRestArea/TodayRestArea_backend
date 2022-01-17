@@ -45,7 +45,6 @@ public class DiaryAnalysisApi {
             // 유저가 존재하지 않음
             if (user.isEmpty())
                 throw new BaseException(NOT_FOUND_USER_EXCEPTION);
-
             /**
              * TODO 여러 검증 및 (일기-사용자 매칭 검증)
              */
