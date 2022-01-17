@@ -22,3 +22,4 @@ public class PostDiaryRequest {
     @Pattern(regexp = "^([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$",message = "날짜형식을 확인해주세요")
     private String createdDate; //2021-01-14 형식
 }
+

@@ -2,13 +2,11 @@ package com.todayrestarea.diary.service;
 
 
 import com.todayrestarea.diary.entity.Diary;
-import com.todayrestarea.diary.model.DiaryListRes;
+import com.todayrestarea.diary.model.*;
 import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Weather;
 
 import com.todayrestarea.common.dto.BaseException;
-import com.todayrestarea.diary.model.PostDiaryRequest;
-import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
 
@@ -25,7 +23,7 @@ import com.todayrestarea.diary.repository.DiaryRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -43,6 +41,7 @@ public class DiaryServiceImpl implements DiaryService{
     final private UserRepository userRepository;
     final private WeatherRepository weatherRepository;
     final private JpaEmotionRepository emotionRepository;
+    final private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     public Diary createDiary(Long userId, Date date, PostDiaryRequest postDiaryRequest) throws BaseException{
         Optional<User> user = userRepository.findById(userId);
@@ -87,6 +86,38 @@ public class DiaryServiceImpl implements DiaryService{
         return diary.get();
     }
 
+    public GetDiaryDetail getDiaryDetail(Long diaryId, Long userId) throws BaseException{
+
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Diary> diary = diaryRepository.findById(diaryId);
+
+        if (user.isEmpty())
+            throw new BaseException(NOT_FOUND_USER_EXCEPTION);
+        if (diary.isEmpty())
+            throw new BaseException(NOT_FOUND_DIARY_EXCEPTION);
+        if (user.get() != diary.get().getWriter())
+            throw new BaseException(FORBIDDEN_EXCEPTION);
+        String date = format.format(diary.get().getCreatedDate());
+
+        return new GetDiaryDetail(diary.get().getEmotion().getEmotionId(), diary.get().getWeather().getWeatherId(),
+                date,diary.get().getContents());
+    }
+
+    public DiaryRes deleteDiary(Long diaryId, Long userId) throws BaseException{
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Diary> diary = diaryRepository.findById(diaryId);
+
+        if (user.isEmpty())
+            throw new BaseException(NOT_FOUND_USER_EXCEPTION);
+        if (diary.isEmpty())
+            throw new BaseException(NOT_FOUND_DIARY_EXCEPTION);
+        if (user.get() != diary.get().getWriter())
+            throw new BaseException(FORBIDDEN_EXCEPTION);
+
+        DiaryRes deleteDiaryRes = new DiaryRes(diary.get().getDiaryId());
+        diaryRepository.delete(diary.get());
+        return deleteDiaryRes;
+    }
 
     @Override
     public List<DiaryListRes> getDiaryList(Long userId, String yearMonth) {
@@ -101,4 +132,7 @@ public class DiaryServiceImpl implements DiaryService{
         return diaryResList;
 
     }
+
+
+
 }

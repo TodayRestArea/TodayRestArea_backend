@@ -1,6 +1,6 @@
 package com.todayrestarea.diary.api;
 
-import com.todayrestarea.common.dto.BaseException;
+
 import com.todayrestarea.diary.model.*;
 import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.service.DiaryService;
@@ -8,21 +8,16 @@ import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import com.todayrestarea.common.dto.ComResponseDto;
 
-
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+import com.todayrestarea.common.dto.BaseException;
 import static com.todayrestarea.common.ErrorCode.*;
-import static com.todayrestarea.utils.ValidationRegex.isRegexDate;
-import static com.todayrestarea.utils.ValidationRegex.isRegexYearMonth;
 
 @RequiredArgsConstructor
 @RestController
@@ -96,15 +91,33 @@ public class DiaryApi {
      * [GET] /diarys/{diaryId}/details
      */
     @GetMapping("/{diaryId}/details")
-    public ComResponseDto<GetDiaryDetail> getDiaryDetail(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") int diaryId){
+    public ComResponseDto<GetDiaryDetail> getDiaryDetail(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId){
         try {
             // jwt 복호화 => user정보 얻기
             Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
 
             // 일기 수정
-            Diary diary = diaryService.getDiaryDetail(diaryId, userId);
-            GetDiaryDetail diaryDetailRes = new GetDiaryDetail(diary.getDiaryId());
+            GetDiaryDetail diaryDetailRes = diaryService.getDiaryDetail(diaryId, userId);
             return ComResponseDto.success(diaryDetailRes);
+        } catch (BaseException exception)
+        {
+            return ComResponseDto.error(exception.getErrorCode());
+        }
+    }
+
+    /**
+     * 일기 삭제 API
+     * [DELETE] /diarys/{diaryId}
+     */
+    @DeleteMapping("/{diaryId}")
+    public ComResponseDto<DiaryRes> deleteDiary(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId){
+        try {
+            // jwt 복호화 => user정보 얻기
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+
+            // 일기 수정
+            DiaryRes deleteDiaryRes = diaryService.deleteDiary(diaryId, userId);
+            return ComResponseDto.success(deleteDiaryRes);
         } catch (BaseException exception)
         {
             return ComResponseDto.error(exception.getErrorCode());
@@ -120,18 +133,8 @@ public class DiaryApi {
         try {
             // jwt 복호화 => user정보 얻기
             Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-            Optional<User> user = userService.findById(userId);
 
-            // 유저가 존재하지 않음
-            if (user.isEmpty())
-                throw new BaseException(NOT_FOUND_USER_EXCEPTION);
-
-            // date 형식 validation
-            if(!isRegexYearMonth(yearMonth))
-                throw new BaseException(BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION);
-
-            // 일기 생성
-
+            // 일기 리스트 생성
             List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
             return ComResponseDto.success(diaryList);
 
@@ -141,3 +144,4 @@ public class DiaryApi {
         }
     }
 }
+

@@ -1,13 +1,11 @@
 package com.todayrestarea.diary.entity;
 
-
 import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Weather;
 import com.todayrestarea.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -46,3 +44,5 @@ public class Diary {
     @Temporal(value = TemporalType.DATE)
     private Date createdDate;
 }
+
+
