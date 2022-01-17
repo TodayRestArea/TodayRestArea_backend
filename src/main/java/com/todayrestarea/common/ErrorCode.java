@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION(404, "존재하지 않습니다"),
     NOT_FOUND_USER_EXCEPTION(404,  "존재하지 않는 유저입니다"),
     NOT_FOUND_WEATHER_EXCEPTION(404,  "존재하지 않는 날씨입니다"),
+    NOT_FOUND_DIARY_EXCEPTION(404,  "존재하지 않는 일기입니다"),
 
     // Method Not Allowed
     METHOD_NOT_ALLOWED_EXCEPTION(405,  "Method Not allowed"),

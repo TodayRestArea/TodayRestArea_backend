@@ -7,6 +7,7 @@ import com.todayrestarea.admin.repository.WeatherRepository;
 import com.todayrestarea.common.dto.BaseException;
 import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.model.PostDiaryRequest;
+import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
 import lombok.Getter;
@@ -45,7 +46,7 @@ public class DiaryServiceImpl implements DiaryService{
             throw new BaseException(NOT_FOUND_WEATHER_EXCEPTION);
 
         Diary diary = new Diary();
-        diary.setCreatedAt(date);
+        diary.setCreatedDate(date);
         diary.setContents(postDiaryRequest.getContents());
         diary.setWriter(user.get());
         diary.setWeather(weather.get());
@@ -53,5 +54,28 @@ public class DiaryServiceImpl implements DiaryService{
         diaryRepository.save(diary);
 
         return diary;
+    }
+
+    public Diary updateDiary(Long diaryId, Long userId, PutDiaryRequest putDiaryRequest) throws BaseException{
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Weather> weather = weatherRepository.findById(putDiaryRequest.getWeatherId());
+        Optional<Emotion> emotion = emotionRepository.findById(0L);
+        Optional<Diary> diary = diaryRepository.findById(diaryId);
+
+        if (user.isEmpty())
+            throw new BaseException(NOT_FOUND_USER_EXCEPTION);
+        if (diary.isEmpty())
+            throw new BaseException(NOT_FOUND_DIARY_EXCEPTION);
+        if (weather.isEmpty())
+            throw new BaseException(NOT_FOUND_WEATHER_EXCEPTION);
+        if (user.get() != diary.get().getWriter())
+            throw new BaseException(FORBIDDEN_EXCEPTION);
+
+        diary.get().setContents(putDiaryRequest.getContents());
+        diary.get().setWeather(weather.get());
+        diary.get().setEmotion(emotion.get());
+        diaryRepository.save(diary.get());
+
+        return diary.get();
     }
 }

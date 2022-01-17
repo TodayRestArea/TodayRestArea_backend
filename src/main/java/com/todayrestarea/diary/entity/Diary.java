@@ -41,8 +41,8 @@ public class Diary {
 
     @Temporal(value = TemporalType.DATE)
     @UpdateTimestamp
-    private Date updatedAt;
+    private Date updatedDate;
 
     @Temporal(value = TemporalType.DATE)
-    private Date createdAt;
+    private Date createdDate;
 }

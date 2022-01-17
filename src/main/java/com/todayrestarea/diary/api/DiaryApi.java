@@ -2,6 +2,7 @@ package com.todayrestarea.diary.api;
 
 import com.todayrestarea.common.dto.BaseException;
 import com.todayrestarea.diary.entity.Diary;
+import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.diary.service.DiaryService;
 import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,6 @@ import static com.todayrestarea.utils.ValidationRegex.isRegexDate;
 public class DiaryApi {
 
     final private DiaryService diaryService;
-
     final private JwtAuthTokenProvider jwtAuthTokenProvider;
     final private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -45,18 +45,41 @@ public class DiaryApi {
                 throw new BaseException(BAD_REQUEST_PARAMS);
 
             //date validate
-            Date date;
-            try {
-                date = format.parse(postDiaryRequest.getCreatedDate());
-            } catch (ParseException e) {
-                throw new BaseException(DATE_PARSE_FAIL);
-            }
+            Date date = format.parse(postDiaryRequest.getCreatedDate());
             Date today = new Date();
             if (date.after(today))
                 throw new BaseException(BAD_REQUEST_WRONG_DATE);
 
             // 일기 생성
             Diary diary = diaryService.createDiary(userId, date, postDiaryRequest);
+            DiaryRes  diaryRes = new DiaryRes(diary.getDiaryId());
+            return ComResponseDto.success(diaryRes);
+
+        } catch (BaseException exception)
+        {
+            return ComResponseDto.error(exception.getErrorCode());
+        } catch (ParseException exception)
+        {
+            return ComResponseDto.error(DATE_PARSE_FAIL);
+        }
+    }
+
+    /**
+     * 일기 수정 API
+     * [PUT] /diarys
+     */
+    @PutMapping("/{diaryId}")
+    public ComResponseDto<DiaryRes> updateDiary(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId,
+                                                @Valid @RequestBody PutDiaryRequest putDiaryRequest, BindingResult bindingResult){
+        try {
+            // jwt 복호화 => user정보 얻기
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+
+            if (bindingResult.hasErrors())
+                throw new BaseException(BAD_REQUEST_PARAMS);
+
+            // 일기 수정
+            Diary diary = diaryService.updateDiary(diaryId, userId, putDiaryRequest);
             DiaryRes  diaryRes = new DiaryRes(diary.getDiaryId());
             return ComResponseDto.success(diaryRes);
 
