@@ -30,6 +30,10 @@ public class MusicServiceImpl implements MusicService {
     public List<Music> findMusics(){
         return musicRepo.findAll();
     }
+    @Override
+    public Optional<Music> findById(Long id) {
+        return musicRepo.findById(id);
+    }
     /**
      *
      * @param musicRequest

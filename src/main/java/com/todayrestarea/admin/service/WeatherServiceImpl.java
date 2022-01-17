@@ -1,6 +1,5 @@
 package com.todayrestarea.admin.service;
 
-import com.todayrestarea.admin.model.entity.MovieEntity;
 import com.todayrestarea.admin.model.entity.WeatherEntity;
 import com.todayrestarea.admin.repository.WeatherRepository;
 import lombok.Getter;

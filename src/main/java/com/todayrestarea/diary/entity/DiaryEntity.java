@@ -1,9 +1,9 @@
 package com.todayrestarea.diary.entity;
 
 
-import com.todayrestarea.admin.model.entity.EmotionEntity;
+import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.WeatherEntity;
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -37,7 +37,7 @@ public class DiaryEntity {
 
     @ManyToOne
     @JoinColumn(name="emotion_id")
-    private EmotionEntity emotion;
+    private Emotion emotion;
 
     @Temporal(value = TemporalType.DATE)
     @UpdateTimestamp

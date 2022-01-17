@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Entity @Table(name="weather")
 public class WeatherEntity {
 
-    @Id @Column(name="weather_seq")
+    @Id @Column(name="weather_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long weatherIdx;
+    private Long weatherId;
 
     @Column(name="weather")
     private String weather;
