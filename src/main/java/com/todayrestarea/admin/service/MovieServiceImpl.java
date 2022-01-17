@@ -1,5 +1,5 @@
 package com.todayrestarea.admin.service;
-import com.todayrestarea.admin.model.entity.MovieEntity;
+import com.todayrestarea.admin.model.entity.Movie;
 import com.todayrestarea.admin.repository.JpaMovieRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +16,12 @@ public class MovieServiceImpl implements MovieService {
     final private JpaMovieRepository movieRepo;
     //MOVIE serviceImple
     @Override
-    public List<MovieEntity> findMovies(){
+    public List<Movie> findMovies(){
         return movieRepo.findAll();
     }
     @Override
-    public Long saveMovie(MovieEntity movieEntity){
-        return movieRepo.save(movieEntity).getMovieIdx();
+    public Long saveMovie(Movie movie){
+        return movieRepo.save(movie).getMovieId();
     }
     @Override
     public void deleteMovie(Long idx){

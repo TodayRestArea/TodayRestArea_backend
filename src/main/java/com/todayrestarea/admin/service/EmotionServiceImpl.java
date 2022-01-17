@@ -1,6 +1,6 @@
 package com.todayrestarea.admin.service;
 
-import com.todayrestarea.admin.model.entity.EmotionEntity;
+import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.repository.JpaEmotionRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +19,15 @@ public class EmotionServiceImpl implements EmotionService {
 
     //EMOTION serviceImple
     @Override
-    public List<EmotionEntity> findEmotions(){
+    public List<Emotion> findEmotions(){
         return emotionRepo.findAll();
     }
     @Override
-    public Long saveEmotion(EmotionEntity emotionEntity){
-        return emotionRepo.save(emotionEntity).getEmotionIdx();
+    public Long saveEmotion(Emotion emotion){
+        return emotionRepo.save(emotion).getEmotionId();
     }
     @Override
-    public Optional<EmotionEntity> findEmotionByName(String name){
+    public Optional<Emotion> findEmotionByName(String name){
         return emotionRepo.findEmotionByName(name);
     }
     @Override

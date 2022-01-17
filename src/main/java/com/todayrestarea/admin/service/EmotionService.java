@@ -1,14 +1,14 @@
 package com.todayrestarea.admin.service;
 
-import com.todayrestarea.admin.model.entity.EmotionEntity;
+import com.todayrestarea.admin.model.entity.Emotion;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface EmotionService {
     //EMOTION service
-    List<EmotionEntity> findEmotions();
-    Long saveEmotion(EmotionEntity emotionEntity);
+    List<Emotion> findEmotions();
+    Long saveEmotion(Emotion emotion);
     void deleteEmotion(Long idx);
-    Optional<EmotionEntity> findEmotionByName(String name);
+    Optional<Emotion> findEmotionByName(String name);
 }
