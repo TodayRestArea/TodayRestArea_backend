@@ -2,7 +2,7 @@ package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
 import com.todayrestarea.admin.model.dto.EmotionRequest;
-import com.todayrestarea.admin.model.entity.EmotionEntity;
+import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.service.EmotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class EmotionApi {
     public AdminResponse emotionList(){
         AdminResponse res = new AdminResponse();
         try{
-            List<EmotionEntity> emotions = emotionService.findEmotions();
+            List<Emotion> emotions = emotionService.findEmotions();
             if(emotions.size()==0){
                 res.setMessage("success but data empty");
             }
@@ -43,7 +43,7 @@ public class EmotionApi {
         System.out.println("emotionRequest.toString() = " + emotionRequest.toString());
         AdminResponse res = new AdminResponse();
         try {
-            Optional<EmotionEntity> existEntity=emotionService.findEmotionByName(
+            Optional<Emotion> existEntity=emotionService.findEmotionByName(
                     emotionRequest.getEmotionName()
             );
 
@@ -51,11 +51,11 @@ public class EmotionApi {
                 res.setResult(existEntity.get());
                 throw new Exception("이미 존재하는 감정 입니다") ;
             }else{
-                EmotionEntity emotionEntity=new EmotionEntity();
-                emotionEntity.setEmotionName(emotionRequest.getEmotionName());
-                Long resultIdx = emotionService.saveEmotion(emotionEntity);
+                Emotion emotion =new Emotion();
+                emotion.setEmotionName(emotionRequest.getEmotionName());
+                Long resultIdx = emotionService.saveEmotion(emotion);
                 Map<String,Long> result=new HashMap<>();
-                result.put("emotionIdx",resultIdx);
+                result.put("emotionId",resultIdx);
                 res.setResult(result);
             }
 

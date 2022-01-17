@@ -2,8 +2,7 @@ package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
 import com.todayrestarea.admin.model.dto.MusicRequest;
-import com.todayrestarea.admin.model.entity.MusicEntity;
-import com.todayrestarea.admin.service.EmotionService;
+import com.todayrestarea.admin.model.entity.Music;
 import com.todayrestarea.admin.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,7 @@ public class MusicApi {
     public AdminResponse musicList(){
         AdminResponse res = new AdminResponse();
         try{
-            List<MusicEntity> musics = musicService.findMusics();
+            List<Music> musics = musicService.findMusics();
             if(musics.size()==0){
                 res.setMessage("success but data empty");
             }
@@ -47,7 +46,7 @@ public class MusicApi {
     public AdminResponse musicAdd(@RequestBody MusicRequest musicRequest) {
         AdminResponse res = new AdminResponse();
         try {
-            Optional<MusicEntity> existEntity=musicService.isExist(
+            Optional<Music> existEntity=musicService.isExist(
                     musicRequest.getMusicTitle(),
                     musicRequest.getMusicArtist()
             );
@@ -57,7 +56,7 @@ public class MusicApi {
             }else{
                 Long resultIdx = musicService.saveMusic(musicRequest);
                 Map<String,Long> result=new HashMap<>();
-                result.put("musicIdx",resultIdx);
+                result.put("musicId",resultIdx);
                 res.setResult(result);
             }
 
