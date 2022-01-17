@@ -42,7 +42,7 @@ public class JwtAuthTokenProvider {
     }
 
 
-    public AuthTokenPayload getPayload(String accessToken) {
+    public AuthTokenPayload getPayload(String accessToken) throws BaseException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET))
                 .withIssuer("test")
                 .build();
@@ -50,9 +50,9 @@ public class JwtAuthTokenProvider {
             DecodedJWT jwt = verifier.verify(accessToken);
             return AuthTokenPayload.of(jwt.getClaim("user_id").asLong());
         }  catch (TokenExpiredException exception) {
-            throw new TokenExpiredException("Access token($accessToken)이 만료되었습니다.");
+            throw new BaseException(TOKEN_EXPIRED_EXCEPTION);
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException("Access token($accessToken)을 디코드 하는 중 에러가 발생하였습니다. message: ${exception.message}");
+            throw new BaseException(UNAUTHORIZED_EXCEPTION);
         }
     }
 

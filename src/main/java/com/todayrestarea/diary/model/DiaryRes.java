@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class DiaryRes {
-    private int diaryIdx;
+    private Long diaryIdx;
 }
