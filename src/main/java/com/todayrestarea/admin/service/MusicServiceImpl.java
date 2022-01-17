@@ -54,7 +54,7 @@ public class MusicServiceImpl implements MusicService {
             music.setArtist(miResponse.get().getArtist());
             music.setInfoUrl(miResponse.get().getUrl());
             music.setPosterUrl(miResponse.get().getPosterUrl());
-            music.setEmotionIdx(0);
+            music.setEmotionId(0);
             System.out.println("musicEntity.toString() = " + music.toString());
             return musicRepo.save(music).getMusicId();
         }
