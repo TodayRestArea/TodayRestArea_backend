@@ -1,9 +1,9 @@
 package com.todayrestarea.diary.entity;
 
 
-import com.todayrestarea.admin.model.entity.EmotionEntity;
-import com.todayrestarea.admin.model.entity.WeatherEntity;
-import com.todayrestarea.user.domain.User;
+import com.todayrestarea.admin.model.entity.Emotion;
+import com.todayrestarea.admin.model.entity.Weather;
+import com.todayrestarea.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Entity
 @Table(name="diary")
-public class DiaryEntity {
+public class Diary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryId;
@@ -33,17 +33,16 @@ public class DiaryEntity {
 
     @ManyToOne
     @JoinColumn(name="weather_id")
-    private WeatherEntity weather;
+    private Weather weather;
 
     @ManyToOne
     @JoinColumn(name="emotion_id")
-    private EmotionEntity emotion;
+    private Emotion emotion;
 
     @Temporal(value = TemporalType.DATE)
     @UpdateTimestamp
     private Date updatedAt;
 
     @Temporal(value = TemporalType.DATE)
-    @CreationTimestamp
     private Date createdAt;
 }

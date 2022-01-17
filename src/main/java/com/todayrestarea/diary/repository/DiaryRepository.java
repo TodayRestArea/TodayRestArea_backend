@@ -1,8 +1,8 @@
 package com.todayrestarea.diary.repository;
 
-import com.todayrestarea.diary.entity.DiaryEntity;
+import com.todayrestarea.diary.entity.Diary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
+public interface DiaryRepository extends JpaRepository<Diary,Long> {
 
 }

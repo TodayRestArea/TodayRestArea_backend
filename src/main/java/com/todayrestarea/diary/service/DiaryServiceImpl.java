@@ -1,5 +1,14 @@
 package com.todayrestarea.diary.service;
 
+import com.todayrestarea.admin.model.entity.Emotion;
+import com.todayrestarea.admin.model.entity.Weather;
+import com.todayrestarea.admin.repository.JpaEmotionRepository;
+import com.todayrestarea.admin.repository.WeatherRepository;
+import com.todayrestarea.common.dto.BaseException;
+import com.todayrestarea.diary.entity.Diary;
+import com.todayrestarea.diary.model.PostDiaryRequest;
+import com.todayrestarea.user.entity.User;
+import com.todayrestarea.user.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -7,12 +16,42 @@ import org.springframework.stereotype.Service;
 
 import com.todayrestarea.diary.repository.DiaryRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+
+import static com.todayrestarea.common.ErrorCode.*;
+
 @Getter
 @Setter
 @Service
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService{
+
     final private DiaryRepository diaryRepository;
+    final private UserRepository userRepository;
+    final private WeatherRepository weatherRepository;
+    final private JpaEmotionRepository emotionRepository;
 
+    public Diary createDiary(Long userId, Date date, PostDiaryRequest postDiaryRequest) throws BaseException{
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Weather> weather = weatherRepository.findById(postDiaryRequest.getWeatherId());
+        Optional<Emotion> emotion = emotionRepository.findById(0L);
 
+        if (user.isEmpty())
+            throw new BaseException(NOT_FOUND_USER_EXCEPTION);
+        if (weather.isEmpty())
+            throw new BaseException(NOT_FOUND_WEATHER_EXCEPTION);
+
+        Diary diary = new Diary();
+        diary.setCreatedAt(date);
+        diary.setContents(postDiaryRequest.getContents());
+        diary.setWriter(user.get());
+        diary.setWeather(weather.get());
+        diary.setEmotion(emotion.get());
+        diaryRepository.save(diary);
+
+        return diary;
+    }
 }

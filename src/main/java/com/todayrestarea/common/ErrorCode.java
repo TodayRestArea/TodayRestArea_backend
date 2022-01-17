@@ -14,6 +14,8 @@ public enum ErrorCode {
     BAD_REQUEST_WRONG_EMAIL_FORMAT_EXCEPTION(400, "잘못된 이메일 포맷입니다"),
     BAD_REQUEST_WRONG_USER_DELETE_EXCEPTION(400, "잘못된 유저 삭제 요청입니다"),
     BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION(400, "잘못된 날짜 포맷입니다"),
+    BAD_REQUEST_PARAMS(400, "입력값을 확인해주세요"),
+    BAD_REQUEST_WRONG_DATE(400, "미래의 일기는 쓸 수 없습니다"),
 
     // UnAuthorized
     UNAUTHORIZED_EXCEPTION(401,  "잘못된 토큰입니다. 다시 로그인해주세요"),
@@ -25,9 +27,11 @@ public enum ErrorCode {
     // NotFound
     NOT_FOUND_EXCEPTION(404, "존재하지 않습니다"),
     NOT_FOUND_USER_EXCEPTION(404,  "존재하지 않는 유저입니다"),
+    NOT_FOUND_WEATHER_EXCEPTION(404,  "존재하지 않는 날씨입니다"),
 
     // Method Not Allowed
     METHOD_NOT_ALLOWED_EXCEPTION(405,  "Method Not allowed"),
+    DATE_PARSE_FAIL(405,  "데이터 파싱 오류"),
 
     // Conflict
     CONFLICT_EXCEPTION(409, "이미 존재합니다"),
