@@ -1,21 +1,29 @@
 package com.todayrestarea.diary.service;
 
+
+import com.todayrestarea.diary.entity.Diary;
+import com.todayrestarea.diary.model.DiaryListRes;
 import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Weather;
-import com.todayrestarea.admin.repository.JpaEmotionRepository;
-import com.todayrestarea.admin.repository.WeatherRepository;
+
 import com.todayrestarea.common.dto.BaseException;
-import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.model.PostDiaryRequest;
 import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import com.todayrestarea.admin.repository.JpaEmotionRepository;
+import com.todayrestarea.admin.repository.WeatherRepository;
 import com.todayrestarea.diary.repository.DiaryRepository;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +31,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.todayrestarea.common.ErrorCode.*;
+
 
 @Getter
 @Setter
@@ -75,7 +84,21 @@ public class DiaryServiceImpl implements DiaryService{
         diary.get().setWeather(weather.get());
         diary.get().setEmotion(emotion.get());
         diaryRepository.save(diary.get());
-
         return diary.get();
+    }
+
+
+    @Override
+    public List<DiaryListRes> getDiaryList(Long userId, String yearMonth) {
+
+        List<Diary> diaryList = diaryRepository.findDiariesByCreatedDate(userId, yearMonth);
+        List<DiaryListRes> diaryResList = new ArrayList<DiaryListRes>();
+
+        for (Diary diary : diaryList) {
+            diaryResList.add(DiaryListRes.of(diary.getDiaryId(), diary.getCreatedDate(), diary.getEmotion().getEmotionId()));
+        }
+
+        return diaryResList;
+
     }
 }

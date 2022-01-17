@@ -1,6 +1,7 @@
 package com.todayrestarea.diary.api;
 
 import com.todayrestarea.common.dto.BaseException;
+import com.todayrestarea.diary.model.DiaryListRes;
 import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.model.PutDiaryRequest;
 import com.todayrestarea.diary.service.DiaryService;
@@ -13,14 +14,18 @@ import com.todayrestarea.common.dto.ComResponseDto;
 import com.todayrestarea.diary.model.DiaryRes;
 import com.todayrestarea.diary.model.PostDiaryRequest;
 
-import javax.validation.Valid;
 
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 import static com.todayrestarea.common.ErrorCode.*;
 import static com.todayrestarea.utils.ValidationRegex.isRegexDate;
+import static com.todayrestarea.utils.ValidationRegex.isRegexYearMonth;
 
 @RequiredArgsConstructor
 @RestController
@@ -89,21 +94,51 @@ public class DiaryApi {
         }
     }
 
-//    /**
-//     * 일기상세 조회 API
-//     * [GET] /diarys
-//     */
+    /**
+     * 일기상세 조회 API
+     * [GET] /diarys
+     */
 //    @GetMapping("/{diaryIdx}/details")
 //    public ComResponseDto<DiaryRes> getDiaryDetail(@PathVariable("diaryIdx") int diaryIdx){
 //        // TODO : accessToken 복호화 => userIdx정보 얻기
 //
-////        try {
-////
-////
-////        } catch (BaseException exception)
-////        {
-////            return ComResponseDto.error(exception.getErrorCode());
-////        }
+//        try {
+//
+//
+//        } catch (BaseException exception)
+//        {
+//            return ComResponseDto.error(exception.getErrorCode());
+//        }
 //
 //    }
+
+    /**
+     * 일기 월별 조회 API
+     * [GET] /diarys
+     */
+    @GetMapping("/{year-month}")
+    public ComResponseDto<List<DiaryListRes>> getDiaryList(@RequestHeader("Authorization") String jwtToken, @PathVariable("year-month") String yearMonth){
+        try {
+            // jwt 복호화 => user정보 얻기
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+            Optional<User> user = userService.findById(userId);
+
+            // 유저가 존재하지 않음
+            if (user.isEmpty())
+                throw new BaseException(NOT_FOUND_USER_EXCEPTION);
+
+            // date 형식 validation
+            if(!isRegexYearMonth(yearMonth))
+                throw new BaseException(BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION);
+
+            // 일기 생성
+
+            List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
+            return ComResponseDto.success(diaryList);
+
+        } catch (BaseException exception)
+        {
+            return ComResponseDto.error(exception.getErrorCode());
+        }
+    }
 }
