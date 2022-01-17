@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DiaryRes {
-    private Long diaryIdx;
+public class RecommendMusic{
+    private String title;
+    private String artist;
+    private String posterUrl;
+    private String infoUrl;
 }

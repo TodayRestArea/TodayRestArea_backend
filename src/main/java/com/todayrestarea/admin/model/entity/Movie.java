@@ -23,4 +23,16 @@ public class Movie {
     private String posterUrl;
     @Column(name="info_url")
     private String infoUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "emotion_emotion_id")
+    private Emotion emotion;
+
+    void setEmotion(Emotion emotion){
+        if (this.emotion != null) {
+            this.emotion.getMovies().remove(this);
+        }
+        this.emotion=emotion;
+        this.emotion.getMovies().add(this);
+    }
 }

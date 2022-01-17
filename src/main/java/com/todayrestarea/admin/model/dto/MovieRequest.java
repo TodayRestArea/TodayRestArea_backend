@@ -10,5 +10,5 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class MovieRequest {
     final private String movieTitle;
-    final private String emotionName;
+    final private Long emotionId;
 }

@@ -40,10 +40,8 @@ public class Diary {
     private Emotion emotion;
 
     @Temporal(value = TemporalType.DATE)
-    @UpdateTimestamp
-    private Date updatedAt;
+    private Date updatedDate;
 
     @Temporal(value = TemporalType.DATE)
-    @CreationTimestamp
     private Date createdDate;
 }

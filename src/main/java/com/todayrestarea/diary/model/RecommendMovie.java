@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DiaryRes {
-    private Long diaryIdx;
+public class RecommendMovie {
+    private String title;
+    private String posterUrl;
+    private String infoUrl;
 }
