@@ -62,7 +62,7 @@ public class MusicApi {
                throw new Exception("이미 존재하는 제목-아티스트 입니다") ;
             }else{
                 Optional<Emotion> emotion=emotionService.findEmotionById(musicRequest.getEmotionId());
-                if(emotion.isPresent()){
+                if(emotion.isEmpty()){
                     throw new Exception("존재하지 않는 감정 아이디 입니다") ;
                 }
                 Long resultIdx = musicService.saveMusic(musicRequest);
