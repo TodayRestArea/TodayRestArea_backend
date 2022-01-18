@@ -14,6 +14,7 @@ public class MusicInfoResponse{
     final private String name;
     final private String artist;
     final private String url;
+    final private String director;
     final private List<PosterImage> posterImage;
     public String getPosterUrl(){
         if (posterImage.size() == 0) {

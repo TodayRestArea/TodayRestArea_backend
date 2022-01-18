@@ -1,5 +1,6 @@
 package com.todayrestarea.diary.service;
 
+import com.todayrestarea.admin.model.dto.MovieRequest;
 import com.todayrestarea.admin.model.dto.MusicRequest;
 import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Movie;
@@ -59,26 +60,56 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
 
             //임시 목업
             Long emotionAPIres=2l;
-            List<String> apiRecommendMovieList = new ArrayList<>();
-            List<APIrecommendMusic> apiRecommendMusicList = new ArrayList<>();
-            apiRecommendMovieList.add("name1");
-            apiRecommendMovieList.add("name2");
-            apiRecommendMovieList.add("name3");
-            apiRecommendMusicList.add(new APIrecommendMusic("도망가자","선우정아"));
-            apiRecommendMusicList.add(new APIrecommendMusic("우산","윤하"));
-            apiRecommendMusicList.add(new APIrecommendMusic("감사","김동률"));
+            List<APIrecommend> apiRecommendMovieList = new ArrayList<>();
+            List<APIrecommend> apiRecommendMusicList = new ArrayList<>();
+            apiRecommendMovieList.add(new APIrecommend("그시절, 우리가 좋아했던 소녀","구파도"));
+            apiRecommendMovieList.add(new APIrecommend("메기","이옥섭"));
+            apiRecommendMovieList.add(new APIrecommend("신세계","박훈정"));
+            apiRecommendMusicList.add(new APIrecommend("도망가자","선우정아"));
+            apiRecommendMusicList.add(new APIrecommend("우산","윤하"));
+            apiRecommendMusicList.add(new APIrecommend("감사","김동률"));
 
 
             /**
              * return 에 필요한 컨텐츠 초기화
              */
             //api res 음악,영화 - 감정 매칭 후 저장
-            for (String rmdMovie : apiRecommendMovieList) {
-               // Optional<Movie> movie=movieService.saveMovie()
-                result.getRecommendMovies().add(new RecommendMovie("temp","temp","temp"));
+            for (APIrecommend rmdMovie : apiRecommendMovieList) {
+                Optional<Movie> movie = movieService.isExist(rmdMovie.getTitle(), rmdMovie.getName());
+                Long resultIdx=0l;
+
+                /**
+                 * 음악 없으면 저장
+                 */
+                if (movie.isEmpty()) {
+                    resultIdx=movieService.saveMovie(new MovieRequest(
+                            rmdMovie.getTitle(),
+                            rmdMovie.getName(),
+                            emotionAPIres
+                    ));
+                }else{
+                    resultIdx=movie.get().getMovieId();
+                }
+
+                /**
+                 * 해당 아이템에 해당하는 영화 조회후 결과 모델에 저장
+                 */
+                if (resultIdx != -1l && resultIdx != null) {
+                    Optional<Movie> movieRes=movieService.findById(resultIdx);
+                    result.getRecommendMovies().add(
+                            new RecommendMovie(
+                                    movieRes.get().getTitle()
+                                    ,movieRes.get().getDirector()
+                                    ,movieRes.get().getPlot()
+                                    ,movieRes.get().getPosterUrl()
+                                    ,movieRes.get().getInfoUrl()
+                            )
+                    );
+                }
+
             }
-            for (APIrecommendMusic rmdMusic : apiRecommendMusicList) {
-                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getArtist());
+            for (APIrecommend rmdMusic : apiRecommendMusicList) {
+                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getName());
                 Long resultIdx=0l;
 
                 /**
@@ -87,7 +118,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
                 if (music.isEmpty()) {
                     resultIdx=musicService.saveMusic(new MusicRequest(
                             rmdMusic.getTitle(),
-                            rmdMusic.getArtist(),
+                            rmdMusic.getName(),
                             emotionAPIres
                     ));
                 }else{
@@ -155,7 +186,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
 @Getter
 @Setter
 @AllArgsConstructor
-class APIrecommendMusic{
+class APIrecommend{
     private String title;
-    private String artist;
+    private String name;
 }

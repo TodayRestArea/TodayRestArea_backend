@@ -1,7 +1,9 @@
 package com.todayrestarea.admin.api;
 
 import com.todayrestarea.admin.model.dto.AdminResponse;
+import com.todayrestarea.admin.model.dto.MovieListResponse;
 import com.todayrestarea.admin.model.dto.MovieRequest;
+import com.todayrestarea.admin.model.dto.MusicListResponse;
 import com.todayrestarea.admin.model.entity.Movie;
 import com.todayrestarea.admin.service.MovieService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -26,7 +29,8 @@ public class MovieApi {
             if(movies.size()==0){
                 res.setMessage("success but data empty");
             }
-            res.setResult(movies);
+            MovieListResponse movieRes = new MovieListResponse(movies);
+            res.setResult(movieRes.getDtoList());
         }catch(Exception e){
             res.setCode(404);
             res.setSuccess(false);
@@ -40,16 +44,16 @@ public class MovieApi {
     public AdminResponse movieAdd(@RequestBody MovieRequest movieRequest) {
         AdminResponse res = new AdminResponse();
         try {
-           res.setMessage("yet developed");
-           Movie movie =new Movie();
-           movie.setEmotionId(0);
-           movie.setMovieTitle("temp movie title");
-           movie.setInfoUrl("temp info url");
-           movie.setPosterUrl("temp poster url");
-            Long idx=movieService.saveMovie(movie);
-            Map<String,Long> result=new HashMap<>();
-            result.put("movieId",idx);
-            res.setResult(result);
+            Movie movie =new Movie();
+            Optional<Movie> isExist = movieService.isExist(movieRequest.getMovieTitle(), movieRequest.getMovieDirector());
+            if (isExist.isPresent()) {
+                throw new Exception("이미 존재하는 영화-감독명 입니다");
+            }else{
+                Long idx=movieService.saveMovie(movieRequest);
+                Map<String,Long> result=new HashMap<>();
+                result.put("movieId",idx);
+                res.setResult(result);
+            }
         } catch (Exception e) {
             res.setCode(404);
             res.setSuccess(false);

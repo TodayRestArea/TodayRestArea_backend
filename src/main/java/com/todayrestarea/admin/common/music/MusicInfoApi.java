@@ -72,8 +72,8 @@ public class MusicInfoApi {
                 String att=artistObj.get("track").get("artist").get("name");
                 String url=track.get("url").toString();
                 String nm=track.get("name").toString();
-                MusicInfoResponse cur=new MusicInfoResponse(nm,att,url,posterImageList);
-                resultList.add(cur);
+              //  MusicInfoResponse cur=new MusicInfoResponse(nm,att,url,posterImageList);
+              //  resultList.add(cur);
         } catch (Exception e) {
             System.out.println("At MusicInfoApi.getMusicInfo"+" \nreq ERROR message: "+e.getMessage());
         }finally {

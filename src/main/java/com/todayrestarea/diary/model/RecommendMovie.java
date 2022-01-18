@@ -9,6 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RecommendMovie {
     private String title;
+    private String director;
+    private String plot;
     private String posterUrl;
     private String infoUrl;
 }

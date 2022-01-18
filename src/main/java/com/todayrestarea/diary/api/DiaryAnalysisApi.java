@@ -39,8 +39,8 @@ public class DiaryAnalysisApi {
     ){
         try {
             // jwt 복호화 => user정보 얻기
-//            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-            Optional<User> user = userService.findById(2l);
+            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+            Optional<User> user = userService.findById(userId);
 
             // 유저가 존재하지 않음
             if (user.isEmpty())
