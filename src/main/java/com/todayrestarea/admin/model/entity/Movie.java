@@ -30,7 +30,7 @@ public class Movie {
     private String plot;
 
     @ManyToOne
-    @JoinColumn(name = "emotion_emotion_id")
+    @JoinColumn(name = "emotion_id")
     private Emotion emotion;
 
     public void setEmotion(Emotion emotion){

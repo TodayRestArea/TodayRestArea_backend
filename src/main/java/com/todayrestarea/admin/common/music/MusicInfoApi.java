@@ -62,7 +62,7 @@ public class MusicInfoApi {
             //json을 instance로 바꾸는게 잘안돼서 깡으로함~end
 
                 List<PosterImage> posterImageList=new ArrayList<>();
-                //posterImageList.add(new PosterImage("empty","empty"));
+               // posterImageList.add(new PosterImage("empty","empty"));
                 for (Map<String,String> poster:albumImage){
                     String posterSize=poster.get("size").toString();
                     String posterUrl=poster.get("#text").toString();
@@ -72,8 +72,8 @@ public class MusicInfoApi {
                 String att=artistObj.get("track").get("artist").get("name");
                 String url=track.get("url").toString();
                 String nm=track.get("name").toString();
-              //  MusicInfoResponse cur=new MusicInfoResponse(nm,att,url,posterImageList);
-              //  resultList.add(cur);
+                MusicInfoResponse cur=new MusicInfoResponse(nm,att,url,posterImageList);
+                resultList.add(cur);
         } catch (Exception e) {
             System.out.println("At MusicInfoApi.getMusicInfo"+" \nreq ERROR message: "+e.getMessage());
         }finally {

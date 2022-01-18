@@ -81,7 +81,7 @@ public class MovieInfoApi {
 
     public static void main(String[] args) {
         MovieInfoApi movApi=new MovieInfoApi();
-        Optional<MovieInfoResponse> ms=movApi.getMovieInfo("돈룩업","아담멕케이");
+        Optional<MovieInfoResponse> ms=movApi.getMovieInfo("Special Delivery","teuk-song");
         if(ms.isPresent())
         System.out.println("ms.get().toString() = " + ms.get().toString());
         else{

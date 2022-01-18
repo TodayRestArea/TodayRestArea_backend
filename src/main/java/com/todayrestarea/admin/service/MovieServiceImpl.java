@@ -35,7 +35,18 @@ public class MovieServiceImpl implements MovieService {
     }
     @Override
     public Optional<Movie> isExist(String title,String director){
-        return movieRepo.checkExistence(title, director);
+        MovieInfoApi movieInfoApi=new MovieInfoApi();
+        Optional<MovieInfoResponse> movieInfoResponse=movieInfoApi.getMovieInfo(title,director);
+        /**
+         * "요청이 영어로 들어올수도 있다. 한국영화도 영어제목으로 " -최예림-
+         * 영어제목과 한국어제목 동기화
+         */
+        if(movieInfoResponse.isEmpty()){
+            return movieRepo.checkExistence(title, director);
+        }else{
+            System.out.println("movieInfoResponse.get().getTitle()+\"\\n\"+movieInfoResponse.get().getDirector() = " + movieInfoResponse.get().getTitle()+"\n"+movieInfoResponse.get().getDirector());
+            return movieRepo.checkExistence(movieInfoResponse.get().getTitle(), movieInfoResponse.get().getDirector());
+        }
     }
     @Override
     public Long saveMovie(MovieRequest movieRequest){
@@ -57,12 +68,11 @@ public class MovieServiceImpl implements MovieService {
                 movie.setPosterUrl(miResponse.get().getPosterUrl());
                 movie.setInfoUrl(miResponse.get().getInfoUrl());
                 movie.setEmotion(emotion.get());
-
+                Movie resIdx=movieRepo.save(movie);
             }else{
                 return null;
             }
             //받은 정보 이용한 entity 초기화
-            Movie resIdx=movieRepo.save(movie);
             System.out.println("musicEntity.toString() = " + movie.toString());
             return movie.getMovieId();
         }
