@@ -10,5 +10,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class MovieRequest {
     final private String movieTitle;
+    final private String movieDirector;
     final private Long emotionId;
 }

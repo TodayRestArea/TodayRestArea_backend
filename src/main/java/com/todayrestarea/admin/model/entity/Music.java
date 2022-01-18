@@ -7,6 +7,7 @@ import javax.persistence.*;
 @ToString
 @Getter
 @Setter
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 @NamedQuery(name = "Music.checkExistence",
