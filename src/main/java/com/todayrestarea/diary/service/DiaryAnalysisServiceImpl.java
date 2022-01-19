@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -150,8 +151,9 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
             /**
              * 감정분석 미완료된 일기는 감정분석 결과를 넣어준다
              */
-            if (diary.get().getEmotion()==null&&emotion.isPresent()) {
+            if (diary.get().getEmotion().getEmotionId()==0l&&emotion.isPresent()) {
                 diary.get().setEmotion(emotion.get());
+                diaryRepository.save(diary.get());
             }
             result.setCreatedData(diary.get().getCreatedDate());
             result.setEmotionId(emotion.get().getEmotionId());
