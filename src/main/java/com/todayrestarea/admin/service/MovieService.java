@@ -10,7 +10,7 @@ public interface MovieService {
     //MOVIE service
     Optional<Movie> findById(Long id);
     List<Movie> findMovies();
-    Long saveMovie(MovieRequest movieRequest);
+    Long saveMovie(MovieRequest movieRequest) throws Exception;
     void deleteMovie(Long idx);
     Optional<Movie> isExist(String title,String director);
 }

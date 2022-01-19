@@ -5,10 +5,12 @@ import com.todayrestarea.admin.common.music.MusicInfoResponse;
 import com.todayrestarea.admin.common.music.PosterImage;
 import com.todayrestarea.admin.model.entity.Movie;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+@Component
 public class MovieInfoApi {
 
     public Optional<MovieInfoResponse> getMovieInfo(String title,String director){

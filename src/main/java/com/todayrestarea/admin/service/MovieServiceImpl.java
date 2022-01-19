@@ -1,4 +1,5 @@
 package com.todayrestarea.admin.service;
+import com.todayrestarea.admin.common.emotion.EmotionAnalysisApi;
 import com.todayrestarea.admin.common.movie.MovieInfoApi;
 import com.todayrestarea.admin.common.movie.MovieInfoResponse;
 import com.todayrestarea.admin.common.music.MusicInfoApi;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class MovieServiceImpl implements MovieService {
     final private JpaMovieRepository movieRepo;
     final private JpaEmotionRepository emotionRepo;
+    final private MovieInfoApi movieInfoApi;
     //MOVIE serviceImple
     @Override
     public List<Movie> findMovies(){
@@ -35,7 +37,6 @@ public class MovieServiceImpl implements MovieService {
     }
     @Override
     public Optional<Movie> isExist(String title,String director){
-        MovieInfoApi movieInfoApi=new MovieInfoApi();
         Optional<MovieInfoResponse> movieInfoResponse=movieInfoApi.getMovieInfo(title,director);
         /**
          * "요청이 영어로 들어올수도 있다. 한국영화도 영어제목으로 " -최예림-
@@ -49,12 +50,20 @@ public class MovieServiceImpl implements MovieService {
         }
     }
     @Override
-    public Long saveMovie(MovieRequest movieRequest){
-        MovieInfoApi mi=new MovieInfoApi();
-        Optional<MovieInfoResponse> miResponse=mi.getMovieInfo(
+    public Long saveMovie(MovieRequest movieRequest)throws Exception{
+
+        Optional<Movie> checkExistence = this.isExist(movieRequest.getMovieTitle(), movieRequest.getMovieDirector());
+        //이미 존재시 인덱스 반환
+        if (checkExistence.isPresent()) {
+            return checkExistence.get().getMovieId();
+        }
+
+
+        Optional<MovieInfoResponse> miResponse=movieInfoApi.getMovieInfo(
                 movieRequest.getMovieTitle(),
                 movieRequest.getMovieDirector()
         );
+        //검색결과 없을시 -1반환
         System.out.println("miResponse.toString() = " + miResponse.toString());
         if(miResponse.isEmpty()){
             return -1l;

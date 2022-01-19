@@ -24,6 +24,7 @@ import java.util.Optional;
 public class MusicServiceImpl implements MusicService {
     final private JpaEmotionRepository emotionRepo;
     final private JpaMusicRepository musicRepo;
+    final private MusicInfoApi mi;
 
     //MUSIC serviceImple
     @Override
@@ -42,7 +43,11 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public Long saveMusic(MusicRequest musicRequest){
         //mi : music Api
-        MusicInfoApi mi=new MusicInfoApi();
+        Optional<Music> checkExistence = this.isExist(musicRequest.getMusicTitle(), musicRequest.getMusicArtist());
+        if (checkExistence.isPresent()) {
+            return checkExistence.get().getMusicId();
+        }
+
         Optional<MusicInfoResponse> miResponse=mi.getMusicInfo(
                 musicRequest.getMusicTitle(),
                 musicRequest.getMusicArtist()

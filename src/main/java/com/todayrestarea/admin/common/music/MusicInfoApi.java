@@ -2,18 +2,18 @@ package com.todayrestarea.admin.common.music;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-
+@Component
 public class MusicInfoApi {
 
     /**
      * 20220115 yts
      * @param title : 노래 제목
      * @param artist : 가수 이름
-     * @param limit : 검색 개수
      * @return {
      *     제목,
      *     가수,
