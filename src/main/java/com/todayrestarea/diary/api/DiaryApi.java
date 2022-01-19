@@ -36,8 +36,8 @@ public class DiaryApi {
     public ComResponseDto<DiaryRes> createDiary(@RequestHeader("Authorization") String jwtToken, @Valid @RequestBody PostDiaryRequest postDiaryRequest, BindingResult bindingResult){
         try {
             // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
+//            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+            Long userId = 1L;
             if (bindingResult.hasErrors())
                 throw new BaseException(BAD_REQUEST_PARAMS);
 
