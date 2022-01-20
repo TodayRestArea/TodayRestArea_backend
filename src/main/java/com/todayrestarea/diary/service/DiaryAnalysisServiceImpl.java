@@ -1,5 +1,9 @@
 package com.todayrestarea.diary.service;
 
+import com.todayrestarea.admin.common.emotion.EmotionAnalysisApi;
+import com.todayrestarea.admin.common.emotion.EmotionAnalysisResponse;
+import com.todayrestarea.admin.common.emotion.MovieApiDto;
+import com.todayrestarea.admin.common.emotion.MusicApiDto;
 import com.todayrestarea.admin.model.dto.MovieRequest;
 import com.todayrestarea.admin.model.dto.MusicRequest;
 import com.todayrestarea.admin.model.entity.Emotion;
@@ -33,110 +37,57 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
     final private JpaEmotionRepository emotionRepository;
     final private MusicService musicService;
     final private MovieService movieService;
+    final private EmotionAnalysisApi emotionAnalysisApi;
     @Override
-    public DiaryAnalysis analyzeDiary(Long diaryId){
+    public DiaryAnalysis analyzeDiary(Long diaryId) throws Exception{
         Optional<Diary> diary = diaryRepository.findById(diaryId);
-        /**
-         * 다음 외부 API 로 감정 컨텐츠 추가 및 일기 감정 수정
-         * {
-         * 	"emotionalType" : int,
-         * 	"movieList" : [string],
-         * 	"musicList": [
-         *                {
-         * 			"musicTitle": string,
-         * 			"singer" : string
-         *        }
-         * 	]
-         * }
-         *
-         * //분노 0
-         * //슬픔 1
-         * //불안 2
-         * //상처 3
-         * //당황 4
-         * //기쁨 5
-         */
         DiaryAnalysis result = new DiaryAnalysis();
         if (diary.isPresent()) {
 
-            //임시 목업
-            Long emotionAPIres=2l;
-            List<APIrecommend> apiRecommendMovieList = new ArrayList<>();
-            List<APIrecommend> apiRecommendMusicList = new ArrayList<>();
-            apiRecommendMovieList.add(new APIrecommend("그시절, 우리가 좋아했던 소녀","구파도"));
-            apiRecommendMovieList.add(new APIrecommend("메기","이옥섭"));
-            apiRecommendMovieList.add(new APIrecommend("신세계","박훈정"));
-            apiRecommendMusicList.add(new APIrecommend("도망가자","선우정아"));
-            apiRecommendMusicList.add(new APIrecommend("우산","윤하"));
-            apiRecommendMusicList.add(new APIrecommend("감사","김동률"));
+           Optional<EmotionAnalysisResponse> analysisResult = emotionAnalysisApi.getAnalysisResult(diary.get().getContents());
+            System.out.println("analysisResult = " + analysisResult.get());
+          // System.out.println("READY TO ANALYZE DIARY = " + analysisResult.get().toString());
 
-
+            if (analysisResult.isEmpty()) {
+                throw new Exception("감정 분석 실패");
+            }
             /**
              * return 에 필요한 컨텐츠 초기화
              */
             //api res 음악,영화 - 감정 매칭 후 저장
-            for (APIrecommend rmdMovie : apiRecommendMovieList) {
-                Optional<Movie> movie = movieService.isExist(rmdMovie.getTitle(), rmdMovie.getName());
-                Long resultIdx=0l;
-
-                /**
-                 * 음악 없으면 저장
-                 */
-                if (movie.isEmpty()) {
-                    resultIdx=movieService.saveMovie(new MovieRequest(
-                            rmdMovie.getTitle(),
-                            rmdMovie.getName(),
-                            emotionAPIres
-                    ));
-                }else{
-                    resultIdx=movie.get().getMovieId();
-                }
-
+            Long emotionIdx=analysisResult.get().getEmotionId();
+            List<MovieApiDto> movieList = analysisResult.get().getMovieList();
+            List<MusicApiDto> musicList = analysisResult.get().getMusicList();
+            for (MovieApiDto rmdMovie : movieList) {
+                Optional<Movie> movie = movieService.isExist(rmdMovie.getTitle(), rmdMovie.getDirector());
+                Long resultIdx=movieService.saveMovie(new MovieRequest(
+                        rmdMovie.getTitle(), rmdMovie.getDirector(), emotionIdx
+                ));
                 /**
                  * 해당 아이템에 해당하는 영화 조회후 결과 모델에 저장
                  */
                 if (resultIdx != -1l && resultIdx != null) {
                     Optional<Movie> movieRes=movieService.findById(resultIdx);
-                    result.getRecommendMovies().add(
-                            new RecommendMovie(
-                                    movieRes.get().getTitle()
-                                    ,movieRes.get().getDirector()
-                                    ,movieRes.get().getPlot()
-                                    ,movieRes.get().getPosterUrl()
-                                    ,movieRes.get().getInfoUrl()
+                    result.getRecommendMovies().add( new RecommendMovie(
+                            movieRes.get().getTitle() ,movieRes.get().getDirector(),movieRes.get().getPlot()
+                            ,movieRes.get().getPosterUrl(),movieRes.get().getInfoUrl()
                             )
                     );
                 }
-
             }
-            for (APIrecommend rmdMusic : apiRecommendMusicList) {
-                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getName());
-                Long resultIdx=0l;
-
-                /**
-                 * 음악 없으면 저장
-                 */
-                if (music.isEmpty()) {
-                    resultIdx=musicService.saveMusic(new MusicRequest(
-                            rmdMusic.getTitle(),
-                            rmdMusic.getName(),
-                            emotionAPIres
-                    ));
-                }else{
-                    resultIdx=music.get().getMusicId();
-                }
-
+            for (MusicApiDto rmdMusic : musicList) {
+                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getArtist());
+                Long  resultIdx=musicService.saveMusic(new MusicRequest(
+                        rmdMusic.getTitle(), rmdMusic.getArtist(), emotionIdx
+                ));
                 /**
                  * 해당 아이템에 해당하는 음악내용 조회후 결과 모델에 저장
                  */
                 if (resultIdx != -1l && resultIdx != null) {
                     Optional<Music> musicRes=musicService.findById(resultIdx);
-                    result.getRecommendMusics().add(
-                            new RecommendMusic(
-                                    musicRes.get().getTitle()
-                                    ,musicRes.get().getArtist()
-                                    ,musicRes.get().getPosterUrl()
-                                    ,musicRes.get().getInfoUrl()
+                    result.getRecommendMusics().add( new RecommendMusic(
+                            musicRes.get().getTitle(),musicRes.get().getArtist()
+                            ,musicRes.get().getPosterUrl(),musicRes.get().getInfoUrl()
                             )
                     );
                 }
@@ -145,9 +96,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
              * return 에 필요한 컨텐츠 초기화 - end
              */
 
-
-
-            Optional<Emotion> emotion = emotionRepository.findById(emotionAPIres);
+            Optional<Emotion> emotion = emotionRepository.findById(emotionIdx);
             /**
              * 감정분석 미완료된 일기는 감정분석 결과를 넣어준다
              */
@@ -164,26 +113,6 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
             return null;
         }
     }
-/**
- * "result": {
- *     "createdDate": "string",
- *     "emotionId": "int",
- *     "recommendMusicList": [
- *       {
- *         "title": "string",
- *         "artist": "string",
- *         "poster": "string"
- *       }
- *     ],
- *     "recommendMovieList": [
- *       {
- *         "title": "string",
- *         "poster": "string",
- *         "url": "string"
- *       }
- *     ]
- *   }
- */
 }
 @Getter
 @Setter

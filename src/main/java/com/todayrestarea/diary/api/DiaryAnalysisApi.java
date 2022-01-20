@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static com.todayrestarea.common.ErrorCode.BAD_REQUEST_WRONG_DATE_FORMAT_EXCEPTION;
-import static com.todayrestarea.common.ErrorCode.NOT_FOUND_USER_EXCEPTION;
+import static com.todayrestarea.common.ErrorCode.*;
 import static com.todayrestarea.utils.ValidationRegex.isRegexDate;
 
 @RequiredArgsConstructor
@@ -36,10 +35,10 @@ public class DiaryAnalysisApi {
     @PutMapping("/{id}/analysis")
     public ComResponseDto<DiaryAnalysis> createDiary(@RequestHeader("Authorization") String jwtToken,
                                                 @PathVariable(value = "id") Long diaryId
-    ){
+    )throws Exception{
         try {
             // jwt 복호화 => user정보 얻기
-          //  Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
+            //  Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
             Optional<User> user = userService.findById(2l);
 
             // 유저가 존재하지 않음
@@ -48,13 +47,15 @@ public class DiaryAnalysisApi {
             /**
              * TODO 여러 검증 및 (일기-사용자 매칭 검증)
              */
-            DiaryAnalysis result= diaryAnalysisService.analyzeDiary(diaryId);
+            DiaryAnalysis result = diaryAnalysisService.analyzeDiary(diaryId);
 
             return ComResponseDto.success(result);
 
-        } catch (BaseException exception)
-        {
+        } catch (BaseException exception) {
             return ComResponseDto.error(exception.getErrorCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ComResponseDto.error(BAD_REQUEST_EXCEPTION);
         }
     }
 
