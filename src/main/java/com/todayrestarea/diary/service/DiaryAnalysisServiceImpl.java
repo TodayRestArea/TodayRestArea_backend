@@ -2,6 +2,8 @@ package com.todayrestarea.diary.service;
 
 import com.todayrestarea.admin.common.emotion.EmotionAnalysisApi;
 import com.todayrestarea.admin.common.emotion.EmotionAnalysisResponse;
+import com.todayrestarea.admin.common.emotion.MovieApiDto;
+import com.todayrestarea.admin.common.emotion.MusicApiDto;
 import com.todayrestarea.admin.model.dto.MovieRequest;
 import com.todayrestarea.admin.model.dto.MusicRequest;
 import com.todayrestarea.admin.model.entity.Emotion;
@@ -42,28 +44,24 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
         DiaryAnalysis result = new DiaryAnalysis();
         if (diary.isPresent()) {
 
-           // Optional<EmotionAnalysisResponse> analysisResult = emotionAnalysisApi.getAnalysisResult(diary.get().getContents());
-           // System.out.println("READY TO ANALYZE DIARY = " + analysisResult.get().toString());
+           Optional<EmotionAnalysisResponse> analysisResult = emotionAnalysisApi.getAnalysisResult(diary.get().getContents());
+            System.out.println("analysisResult = " + analysisResult.get());
+          // System.out.println("READY TO ANALYZE DIARY = " + analysisResult.get().toString());
 
-            //임시 목업
-            Long emotionAPIres=2l;
-            List<APIrecommend> apiRecommendMovieList = new ArrayList<>();
-            List<APIrecommend> apiRecommendMusicList = new ArrayList<>();
-            apiRecommendMovieList.add(new APIrecommend("그시절, 우리가 좋아했던 소녀","구파도"));
-            apiRecommendMovieList.add(new APIrecommend("메기","이옥섭"));
-            apiRecommendMovieList.add(new APIrecommend("신세계","박훈정"));
-            apiRecommendMusicList.add(new APIrecommend("도망가자","선우정아"));
-            apiRecommendMusicList.add(new APIrecommend("우산","윤하"));
-            apiRecommendMusicList.add(new APIrecommend("감사","김동률"));
-
+            if (analysisResult.isEmpty()) {
+                throw new Exception("감정 분석 실패");
+            }
             /**
              * return 에 필요한 컨텐츠 초기화
              */
             //api res 음악,영화 - 감정 매칭 후 저장
-            for (APIrecommend rmdMovie : apiRecommendMovieList) {
-                Optional<Movie> movie = movieService.isExist(rmdMovie.getTitle(), rmdMovie.getName());
+            Long emotionIdx=analysisResult.get().getEmotionId();
+            List<MovieApiDto> movieList = analysisResult.get().getMovieList();
+            List<MusicApiDto> musicList = analysisResult.get().getMusicList();
+            for (MovieApiDto rmdMovie : movieList) {
+                Optional<Movie> movie = movieService.isExist(rmdMovie.getTitle(), rmdMovie.getDirector());
                 Long resultIdx=movieService.saveMovie(new MovieRequest(
-                        rmdMovie.getTitle(), rmdMovie.getName(), emotionAPIres
+                        rmdMovie.getTitle(), rmdMovie.getDirector(), emotionIdx
                 ));
                 /**
                  * 해당 아이템에 해당하는 영화 조회후 결과 모델에 저장
@@ -77,10 +75,10 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
                     );
                 }
             }
-            for (APIrecommend rmdMusic : apiRecommendMusicList) {
-                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getName());
+            for (MusicApiDto rmdMusic : musicList) {
+                Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getArtist());
                 Long  resultIdx=musicService.saveMusic(new MusicRequest(
-                        rmdMusic.getTitle(), rmdMusic.getName(), emotionAPIres
+                        rmdMusic.getTitle(), rmdMusic.getArtist(), emotionIdx
                 ));
                 /**
                  * 해당 아이템에 해당하는 음악내용 조회후 결과 모델에 저장
@@ -98,7 +96,7 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
              * return 에 필요한 컨텐츠 초기화 - end
              */
 
-            Optional<Emotion> emotion = emotionRepository.findById(emotionAPIres);
+            Optional<Emotion> emotion = emotionRepository.findById(emotionIdx);
             /**
              * 감정분석 미완료된 일기는 감정분석 결과를 넣어준다
              */

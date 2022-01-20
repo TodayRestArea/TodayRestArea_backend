@@ -15,19 +15,6 @@ public class EmotionAnalysisResponse {
     private List<MovieApiDto> movieList=new ArrayList<>();
     private List<MusicApiDto> musicList=new ArrayList<>();
 }
-@Getter
-@Setter
-@AllArgsConstructor
-class MovieApiDto{
-    private String title;
-    private String director;
-}
-@Getter
-@AllArgsConstructor
-class MusicApiDto{
-    private String title;
-    private String artist;
-}
 /**
  * {
  *     "emotionType": 5,

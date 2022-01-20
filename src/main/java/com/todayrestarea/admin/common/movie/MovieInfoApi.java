@@ -34,6 +34,7 @@ public class MovieInfoApi {
 
             Map<String, String> APIresult = om.readValue(res, Map.class);
             if(APIresult.get("TotalCount")=="0"){
+                System.out.println("noValue for = " + APIresult.toString());
                 return null;
             }
             System.out.println(1);
@@ -72,7 +73,9 @@ public class MovieInfoApi {
 
             System.out.println("movieInfoResponse.toString() = " + movieInfoResponse.toString());
           } catch (Exception e) {
-            System.out.println("At MusicInfoApi.getMusicInfo"+" \nreq ERROR message: "+e.getMessage());
+            System.out.println("At MovieAPI"+" \nreq ERROR message: "+"No movie in KMDB");
+            System.out.println("director = " + director);
+            System.out.println("title = " + title);
 
         }finally {
             //return resultList.stream().findFirst();
