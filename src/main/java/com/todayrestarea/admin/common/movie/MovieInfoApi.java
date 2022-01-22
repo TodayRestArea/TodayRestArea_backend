@@ -8,9 +8,11 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Component
+@Transactional
 public class MovieInfoApi {
 
     public Optional<MovieInfoResponse> getMovieInfo(String title,String director){

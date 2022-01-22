@@ -47,7 +47,7 @@ public class DiaryAnalysisApi {
             /**
              * TODO 여러 검증 및 (일기-사용자 매칭 검증)
              */
-            DiaryAnalysis result = diaryAnalysisService.analyzeDiary(diaryId);
+            DiaryAnalysis result = diaryAnalysisService.tempAnalyze(diaryId);
 
             return ComResponseDto.success(result);
 

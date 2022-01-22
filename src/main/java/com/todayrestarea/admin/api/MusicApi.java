@@ -58,7 +58,7 @@ public class MusicApi {
                     musicRequest.getMusicArtist()
             );
             if(existEntity.isPresent()){
-                res.setResult(existEntity.get());
+               // res.setResult(existEntity.get());
                throw new Exception("이미 존재하는 제목-아티스트 입니다") ;
             }else{
                 Optional<Emotion> emotion=emotionService.findEmotionById(musicRequest.getEmotionId());
