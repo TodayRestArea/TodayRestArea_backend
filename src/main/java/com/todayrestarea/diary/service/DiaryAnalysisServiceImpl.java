@@ -39,6 +39,17 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
     final private MovieService movieService;
     final private EmotionAnalysisApi emotionAnalysisApi;
     @Override
+    public DiaryAnalysis getFullAnalysisResult(Long diaryId) throws Exception{
+        DiaryAnalysis ret = analyzeDiary(diaryId);
+        Long cnt=0l;
+        while(ret!=null&&(ret.getRecommendMovies().size()<3||ret.getRecommendMusics().size()<3)){
+            cnt++;
+            ret=analyzeDiary(diaryId);
+        }
+        System.out.println("#################\nrequest cnt = " + cnt+"##################");
+        return ret;
+    }
+    @Override
     public DiaryAnalysis analyzeDiary(Long diaryId) throws Exception{
         Optional<Diary> diary = diaryRepository.findById(diaryId);
         DiaryAnalysis result = new DiaryAnalysis();
