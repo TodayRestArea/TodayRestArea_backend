@@ -10,6 +10,7 @@ import com.todayrestarea.admin.model.entity.Emotion;
 import com.todayrestarea.admin.model.entity.Movie;
 import com.todayrestarea.admin.model.entity.Music;
 import com.todayrestarea.admin.repository.JpaEmotionRepository;
+import com.todayrestarea.admin.service.EmotionService;
 import com.todayrestarea.admin.service.MovieService;
 import com.todayrestarea.admin.service.MusicService;
 import com.todayrestarea.diary.entity.Diary;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Math.min;
+
 @Getter
 @Setter
 @Service
@@ -35,20 +38,56 @@ import java.util.Optional;
 public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
     final private DiaryRepository diaryRepository;
     final private JpaEmotionRepository emotionRepository;
+
+    final private EmotionService emotionService;
     final private MusicService musicService;
     final private MovieService movieService;
     final private EmotionAnalysisApi emotionAnalysisApi;
+
     @Override
-    public DiaryAnalysis getFullAnalysisResult(Long diaryId) throws Exception{
-        DiaryAnalysis ret = analyzeDiary(diaryId);
-        Long cnt=0l;
-        while(ret!=null&&(ret.getRecommendMovies().size()<3||ret.getRecommendMusics().size()<3)){
-            cnt++;
-            ret=analyzeDiary(diaryId);
-        }
-        System.out.println("#################\nrequest cnt = " + cnt+"##################");
-        return ret;
+    public DiaryAnalysis tempAnalyze(Long diaryId) throws Exception{
+        Optional<Diary> diary = diaryRepository.findById(diaryId);
+        DiaryAnalysis result = new DiaryAnalysis();
+        if (!diary.isPresent()) throw new Exception("no diary id:"+diaryId);
+
+            Optional<EmotionAnalysisResponse> analysisResult = emotionAnalysisApi.getAnalysisResult(diary.get().getContents());
+            System.out.println("analysisResult = " + analysisResult.get());
+            // System.out.println("READY TO ANALYZE DIARY = " + analysisResult.get().toString());
+
+            if (analysisResult.isEmpty()) {
+                throw new Exception("감정 분석 실패");
+            }
+            Long emotionIdx=analysisResult.get().getEmotionId();
+            Optional<Emotion> emo=emotionService.findEmotionById(emotionIdx);
+
+
+            int movLen=emo.get().getMovies().size();
+            for (Movie movieRes : emo.get().getMovies().subList(0,min(movLen,3))) {
+                result.getRecommendMovies().add( new RecommendMovie(
+                                movieRes.getTitle() ,movieRes.getDirector(),movieRes.getPlot()
+                                ,movieRes.getPosterUrl(),movieRes.getInfoUrl()
+                        )
+                );
+            }
+            int musLen=emo.get().getMusics().size();
+            for (Music musicRes : emo.get().getMusics().subList(0,min(musLen,3))) {
+                    result.getRecommendMusics().add( new RecommendMusic(
+                                    musicRes.getTitle(),musicRes.getArtist()
+                                    ,musicRes.getPosterUrl(),musicRes.getInfoUrl()
+                            )
+                    );
+            }
+            if (diary.get().getEmotion().getEmotionId()==0l&&emo.isPresent()) {
+                diary.get().setEmotion(emo.get());
+                diaryRepository.save(diary.get());
+            }
+            result.setCreatedData(diary.get().getCreatedDate());
+            result.setEmotionId(emo.get().getEmotionId());
+            result.setEmotionName(emo.get().getEmotionName());
+
+        return result;
     }
+
     @Override
     public DiaryAnalysis analyzeDiary(Long diaryId) throws Exception{
         Optional<Diary> diary = diaryRepository.findById(diaryId);
@@ -86,6 +125,9 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
                     );
                 }
             }
+            for (int i = 0; i < 3 - movieList.size();i++) {
+
+            }
             for (MusicApiDto rmdMusic : musicList) {
                 Optional<Music> music = musicService.isExist(rmdMusic.getTitle(), rmdMusic.getArtist());
                 Long  resultIdx=musicService.saveMusic(new MusicRequest(
@@ -102,6 +144,9 @@ public class DiaryAnalysisServiceImpl implements DiaryAnalysisService{
                             )
                     );
                 }
+            }
+            for (int i = 0; i < 3 - movieList.size();i++) {
+
             }
             /**
              * return 에 필요한 컨텐츠 초기화 - end
