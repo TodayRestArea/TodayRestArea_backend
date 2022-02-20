@@ -28,14 +28,14 @@ public class UserServiceImpl implements UserService{
         if(user.isEmpty()){
             user = signUpUser(userInfo);
         }
-        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.get().getUserId()));
+        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.from(user.get().getUserId()));
         String refreshToken = jwtAuthTokenProvider.createRefreshToken();
         user.get().updateRefreshToken(refreshToken);
         return LoginResponse.of(accessToken, refreshToken);
     }
 
     private Optional<User> signUpUser(KakaoUserResponse userInfo) {
-        User newUser = User.newKaKaoInstance(userInfo.getId(), userInfo.getNickName(), userInfo.getAge_range(), userInfo.getGender());
+        User newUser = User.newKaKaoInstance(userInfo);
         return Optional.of(userRepository.save(newUser));
     }
 

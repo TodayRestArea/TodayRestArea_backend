@@ -48,7 +48,7 @@ public class JwtAuthTokenProvider {
                 .build();
         try {
             DecodedJWT jwt = verifier.verify(accessToken);
-            return AuthTokenPayload.of(jwt.getClaim("user_id").asLong());
+            return AuthTokenPayload.from(jwt.getClaim("user_id").asLong());
         }  catch (TokenExpiredException exception) {
             throw new BaseException(TOKEN_EXPIRED_EXCEPTION);
         } catch (JWTVerificationException exception) {

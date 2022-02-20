@@ -8,7 +8,7 @@ import lombok.Getter;
 public class AuthTokenPayload {
     private Long userId;
 
-    public static AuthTokenPayload of(Long userId) {
+    public static AuthTokenPayload from(Long userId) {
         return new AuthTokenPayload(userId);
     }
 }
