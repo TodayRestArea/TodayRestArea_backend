@@ -1,6 +1,5 @@
-package com.todayrestarea.user.util.jwt.dto;
+package com.todayrestarea.auth.jwt.dto;
 
-import com.todayrestarea.user.service.dto.LoginResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +8,7 @@ import lombok.Getter;
 public class AuthTokenPayload {
     private Long userId;
 
-    public static AuthTokenPayload of(Long userId) {
+    public static AuthTokenPayload from(Long userId) {
         return new AuthTokenPayload(userId);
     }
 }

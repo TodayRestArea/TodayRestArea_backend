@@ -1,5 +1,6 @@
 package com.todayrestarea.user.entity;
 
+import com.todayrestarea.auth.kakao.dto.KakaoUserResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,12 +42,12 @@ public class User {
         this.gender = gender;
     }
 
-    public static User newKaKaoInstance(String oauthId, String userName, String ageRange, String gender) {
+    public static User newKaKaoInstance(KakaoUserResponse userInfo) {
         return User.builder()
-                .oauthId(oauthId)
-                .userName(userName)
-                .ageRange(ageRange)
-                .gender(gender)
+                .oauthId(userInfo.getId())
+                .userName(userInfo.getNickName())
+                .ageRange(userInfo.getAge_range())
+                .gender(userInfo.getGender())
                 .build();
     }
 

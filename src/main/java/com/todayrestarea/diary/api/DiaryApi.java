@@ -4,7 +4,7 @@ package com.todayrestarea.diary.api;
 import com.todayrestarea.diary.model.*;
 import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.service.DiaryService;
-import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
+import com.todayrestarea.auth.jwt.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;

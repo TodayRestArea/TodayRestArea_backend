@@ -1,6 +1,6 @@
-package com.todayrestarea.user.util.kakao;
+package com.todayrestarea.auth.kakao;
 
-import com.todayrestarea.user.util.kakao.dto.KakaoUserResponse;
+import com.todayrestarea.auth.kakao.dto.KakaoUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

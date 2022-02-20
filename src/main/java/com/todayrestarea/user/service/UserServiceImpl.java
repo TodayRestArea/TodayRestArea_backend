@@ -5,10 +5,10 @@ import com.todayrestarea.user.entity.User;
 import com.todayrestarea.user.repository.UserRepository;
 import com.todayrestarea.user.service.dto.LoginRequest;
 import com.todayrestarea.user.service.dto.LoginResponse;
-import com.todayrestarea.user.util.jwt.JwtAuthTokenProvider;
-import com.todayrestarea.user.util.jwt.dto.AuthTokenPayload;
-import com.todayrestarea.user.util.kakao.KakaoClient;
-import com.todayrestarea.user.util.kakao.dto.KakaoUserResponse;
+import com.todayrestarea.auth.jwt.JwtAuthTokenProvider;
+import com.todayrestarea.auth.jwt.dto.AuthTokenPayload;
+import com.todayrestarea.auth.kakao.KakaoClient;
+import com.todayrestarea.auth.kakao.dto.KakaoUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +24,19 @@ public class UserServiceImpl implements UserService{
 
     public LoginResponse handleAuth(LoginRequest request) {
         KakaoUserResponse userInfo = kakaoClient.getUserInfo(request.getAccessToken());
-        User user = userRepository.findByOauthId(userInfo.getId());
-        if(user == null){
+        Optional<User> user = userRepository.findByOauthId(userInfo.getId());
+        if(user.isEmpty()){
             user = signUpUser(userInfo);
         }
-        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.of(user.getUserId()));
+        String accessToken = jwtAuthTokenProvider.createAccessToken(AuthTokenPayload.from(user.get().getUserId()));
         String refreshToken = jwtAuthTokenProvider.createRefreshToken();
-        user.updateRefreshToken(refreshToken);
+        user.get().updateRefreshToken(refreshToken);
         return LoginResponse.of(accessToken, refreshToken);
     }
 
-    private User signUpUser(KakaoUserResponse userInfo) {
-        User newUser = User.newKaKaoInstance(userInfo.getId(), userInfo.getNickName(), userInfo.getAge_range(), userInfo.getGender());
-        return userRepository.save(newUser);
+    private Optional<User> signUpUser(KakaoUserResponse userInfo) {
+        User newUser = User.newKaKaoInstance(userInfo);
+        return Optional.of(userRepository.save(newUser));
     }
 
     public Optional<User> findUserByToken(String jwtToken) throws BaseException {
@@ -46,5 +46,10 @@ public class UserServiceImpl implements UserService{
 
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
+    }
+
+    public void deleteUser(Long userId){
+        Optional<User> user = findById(userId);
+        userRepository.delete(user.get());
     }
 }

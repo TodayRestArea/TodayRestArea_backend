@@ -1,4 +1,4 @@
-package com.todayrestarea.user.util.jwt;
+package com.todayrestarea.auth.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -9,7 +9,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.todayrestarea.common.dto.BaseException;
 
-import com.todayrestarea.user.util.jwt.dto.AuthTokenPayload;
+import com.todayrestarea.auth.jwt.dto.AuthTokenPayload;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -48,7 +48,7 @@ public class JwtAuthTokenProvider {
                 .build();
         try {
             DecodedJWT jwt = verifier.verify(accessToken);
-            return AuthTokenPayload.of(jwt.getClaim("user_id").asLong());
+            return AuthTokenPayload.from(jwt.getClaim("user_id").asLong());
         }  catch (TokenExpiredException exception) {
             throw new BaseException(TOKEN_EXPIRED_EXCEPTION);
         } catch (JWTVerificationException exception) {
