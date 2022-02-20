@@ -11,4 +11,5 @@ public interface UserService {
     LoginResponse handleAuth(LoginRequest requestDto);
     Optional<User> findUserByToken(String jwtToken) throws BaseException;
     Optional<User> findById(Long userId);
+    void deleteUser(Long userId);
 }

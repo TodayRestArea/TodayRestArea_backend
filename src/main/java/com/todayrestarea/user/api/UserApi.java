@@ -5,6 +5,7 @@ import com.todayrestarea.user.service.UserService;
 import com.todayrestarea.user.service.dto.LoginRequest;
 import com.todayrestarea.user.service.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,5 +18,12 @@ public class UserApi {
     @PostMapping("/oauth/kakao")
     public ComResponseDto<LoginResponse> kakaoLogin(@RequestBody LoginRequest request) {
         return ComResponseDto.success(userService.handleAuth(request));
+    }
+
+    @DeleteMapping("/user")
+    public  ComResponseDto<Object> deleteUser() {
+        Long userId = 1L;
+        userService.deleteUser(userId);
+        return ComResponseDto.success(null);
     }
 }

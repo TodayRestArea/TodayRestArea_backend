@@ -1,6 +1,5 @@
-package com.todayrestarea.user.util.jwt.dto;
+package com.todayrestarea.auth.jwt.dto;
 
-import com.todayrestarea.user.service.dto.LoginResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
