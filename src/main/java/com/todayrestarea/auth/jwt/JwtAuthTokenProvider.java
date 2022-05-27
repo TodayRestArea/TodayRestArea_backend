@@ -70,4 +70,18 @@ public class JwtAuthTokenProvider {
             throw new IllegalArgumentException("refresh 토큰을 만드는 중 에러가 발생하였습니다");
         }
     }
+
+    public void validateRefreshToken(String refreshToken) throws BaseException {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET))
+                .withIssuer("test")
+                .build();
+        try {
+            verifier.verify(refreshToken);
+        } catch (TokenExpiredException exception) {
+            throw new BaseException(TOKEN_EXPIRED_EXCEPTION);
+        } catch (JWTVerificationException exception) {
+            throw new BaseException(UNAUTHORIZED_EXCEPTION);
+        }
+    }
+
 }

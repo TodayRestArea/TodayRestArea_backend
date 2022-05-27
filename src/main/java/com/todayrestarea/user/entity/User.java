@@ -5,14 +5,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -27,11 +31,9 @@ public class User {
 
     private String gender;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @Transient
     private String refreshToken;
 
     @Builder
@@ -53,6 +55,10 @@ public class User {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void removeRefreshToken() {
+        this.refreshToken = null;
     }
 
 }
