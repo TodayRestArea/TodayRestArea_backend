@@ -20,6 +20,7 @@ public enum ErrorCode {
     // UnAuthorized
     UNAUTHORIZED_EXCEPTION(401,  "잘못된 토큰입니다. 다시 로그인해주세요"),
     TOKEN_EXPIRED_EXCEPTION(401,  "토큰이 만료되었습니다"),
+    NOT_FOUND_TOKEN_EXCEPTION(401,  "토큰이 없습니다."),
 
     // Forbidden
     FORBIDDEN_EXCEPTION(403,  "허용되지 않은 접근입니다"),

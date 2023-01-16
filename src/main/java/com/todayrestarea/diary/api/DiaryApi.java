@@ -1,6 +1,7 @@
 package com.todayrestarea.diary.api;
 
 
+import com.todayrestarea.aspect.UserId;
 import com.todayrestarea.diary.model.*;
 import com.todayrestarea.diary.entity.Diary;
 import com.todayrestarea.diary.service.DiaryService;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.todayrestarea.common.dto.BaseException;
+
 import static com.todayrestarea.common.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -25,7 +27,6 @@ import static com.todayrestarea.common.ErrorCode.*;
 public class DiaryApi {
 
     final private DiaryService diaryService;
-    final private JwtAuthTokenProvider jwtAuthTokenProvider;
     final private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
@@ -33,11 +34,8 @@ public class DiaryApi {
      * [POST] /diarys
      */
     @PostMapping("")
-    public ComResponseDto<DiaryRes> createDiary(@RequestHeader("Authorization") String jwtToken, @Valid @RequestBody PostDiaryRequest postDiaryRequest, BindingResult bindingResult){
+    public ComResponseDto<DiaryRes> createDiary(@UserId Long userId,  @Valid @RequestBody PostDiaryRequest postDiaryRequest, BindingResult bindingResult) {
         try {
-            // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
             if (bindingResult.hasErrors())
                 throw new BaseException(BAD_REQUEST_PARAMS);
 
@@ -49,14 +47,12 @@ public class DiaryApi {
 
             // 일기 생성
             Diary diary = diaryService.createDiary(userId, date, postDiaryRequest);
-            DiaryRes  diaryRes = new DiaryRes(diary.getDiaryId());
+            DiaryRes diaryRes = new DiaryRes(diary.getDiaryId());
             return ComResponseDto.success(diaryRes);
 
-        } catch (BaseException exception)
-        {
+        } catch (BaseException exception) {
             return ComResponseDto.error(exception.getErrorCode());
-        } catch (ParseException exception)
-        {
+        } catch (ParseException exception) {
             return ComResponseDto.error(DATE_PARSE_FAIL);
         }
     }
@@ -66,22 +62,18 @@ public class DiaryApi {
      * [PUT] /diarys/{diaryId}
      */
     @PutMapping("/{diaryId}")
-    public ComResponseDto<DiaryRes> updateDiary(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId,
-                                                @Valid @RequestBody PutDiaryRequest putDiaryRequest, BindingResult bindingResult){
+    public ComResponseDto<DiaryRes> updateDiary(@UserId Long userId, @PathVariable("diaryId") Long diaryId,
+                                                @Valid @RequestBody PutDiaryRequest putDiaryRequest, BindingResult bindingResult) {
         try {
-            // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
             if (bindingResult.hasErrors())
                 throw new BaseException(BAD_REQUEST_PARAMS);
 
             // 일기 수정
             Diary diary = diaryService.updateDiary(diaryId, userId, putDiaryRequest);
-            DiaryRes  diaryRes = new DiaryRes(diary.getDiaryId());
+            DiaryRes diaryRes = new DiaryRes(diary.getDiaryId());
             return ComResponseDto.success(diaryRes);
 
-        } catch (BaseException exception)
-        {
+        } catch (BaseException exception) {
             return ComResponseDto.error(exception.getErrorCode());
         }
     }
@@ -91,16 +83,12 @@ public class DiaryApi {
      * [GET] /diarys/{diaryId}/details
      */
     @GetMapping("/{diaryId}/details")
-    public ComResponseDto<GetDiaryDetail> getDiaryDetail(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId){
+    public ComResponseDto<GetDiaryDetail> getDiaryDetail(@UserId Long userId, @PathVariable("diaryId") Long diaryId) {
         try {
-            // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
             // 일기 수정
             GetDiaryDetail diaryDetailRes = diaryService.getDiaryDetail(diaryId, userId);
             return ComResponseDto.success(diaryDetailRes);
-        } catch (BaseException exception)
-        {
+        } catch (BaseException exception) {
             return ComResponseDto.error(exception.getErrorCode());
         }
     }
@@ -110,16 +98,12 @@ public class DiaryApi {
      * [DELETE] /diarys/{diaryId}
      */
     @DeleteMapping("/{diaryId}")
-    public ComResponseDto<DiaryRes> deleteDiary(@RequestHeader("Authorization") String jwtToken, @PathVariable("diaryId") Long diaryId){
+    public ComResponseDto<DiaryRes> deleteDiary(@UserId Long userId, @PathVariable("diaryId") Long diaryId) {
         try {
-            // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
             // 일기 수정
             DiaryRes deleteDiaryRes = diaryService.deleteDiary(diaryId, userId);
             return ComResponseDto.success(deleteDiaryRes);
-        } catch (BaseException exception)
-        {
+        } catch (BaseException exception) {
             return ComResponseDto.error(exception.getErrorCode());
         }
     }
@@ -129,19 +113,10 @@ public class DiaryApi {
      * [GET] /diarys
      */
     @GetMapping("/{year-month}")
-    public ComResponseDto<List<DiaryListRes>> getDiaryList(@RequestHeader("Authorization") String jwtToken, @PathVariable("year-month") String yearMonth){
-        try {
-            // jwt 복호화 => user정보 얻기
-            Long userId = jwtAuthTokenProvider.getPayload(jwtToken).getUserId();
-
-            // 일기 리스트 생성
-            List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
-            return ComResponseDto.success(diaryList);
-
-        } catch (BaseException exception)
-        {
-            return ComResponseDto.error(exception.getErrorCode());
-        }
+    public ComResponseDto<List<DiaryListRes>> getDiaryList(@UserId Long userId, @PathVariable("year-month") String yearMonth) {
+        // 일기 리스트 생성
+        List<DiaryListRes> diaryList = diaryService.getDiaryList(userId, yearMonth);
+        return ComResponseDto.success(diaryList);
     }
 }
 
